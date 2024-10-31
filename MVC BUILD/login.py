@@ -279,7 +279,7 @@ class Ui_API(object):
             if hasattr(self, 'enter_button_slot'):
                 self.enter_button_slot()
 
-    def ruturn_login_in4(self):
+    def return_login_in4(self):
         data = {
             "username": self.taikhoan.text(),
             "password": self.taikhoan1_2.text()
@@ -309,4 +309,10 @@ class Ui_API(object):
         if not status:
             QtWidgets.QMessageBox.critical(
                 None, "Lỗi kết nối", "Kiểm trai lại tài khoản MySQL"
+            )
+
+    def return_login_status(self, status):
+        if not status:
+            QtWidgets.QMessageBox.critical(
+                None, "Lỗi kết nối", "Kiểm trai lại thông tin đăng nhập"
             )

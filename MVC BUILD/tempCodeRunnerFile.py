@@ -1,2 +1,1 @@
-
-    def sql_enter_button(self):
+return_sql_status

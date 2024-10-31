@@ -21,21 +21,23 @@ class Controller():
         self.my_view.ui.connect_load_login_info(self.load_login_in4())
 
     def handle_login(self):
-        self.save_checkbox()
+        login_data = self.save_checkbox()
         in_4 = self.load_sql_login_in4()
-        print(in_4)
         self.my_model = Model(in_4)
         if (self.my_model.check_connection()):
             self.my_view.ui.return_sql_status(True)
         else:
             self.my_view.ui.return_sql_status(False)
 
+        # return login_data
+        # self.my_view.ui.return_login_status(True)
+
     def check_sql_connection(self):
         self.my_model.check_sql_connection()
 
     def save_checkbox(self):
         self.checkbox_status = self.my_view.ui.check_checkbox_status()
-        data = self.my_view.ui.ruturn_login_in4()
+        data = self.my_view.ui.return_login_in4()
         with open(self.login_config_file_path, 'r') as file:
             login_data = json.load(file)
         if (self.checkbox_status):
@@ -48,6 +50,7 @@ class Controller():
             # print("false")
         with open(self.login_config_file_path, 'w') as config_file:
             json.dump(login_data, config_file)
+        return login_data
 
     def load_login_in4(self):
         try:
