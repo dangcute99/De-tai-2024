@@ -302,7 +302,6 @@ class Ui_API(object):
             self.taikhoan1_2.setText(login_data.get("password", ""))
             self.checkBox.setChecked(True)  # Đánh dấu checkbox
         else:
-            print("Checkbox is not checked (0). No username returned.")
             self.checkBox.setChecked(False)  # Bỏ đánh dấu checkbox
 
     def return_sql_status(self, status):

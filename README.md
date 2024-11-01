@@ -76,3 +76,4 @@ git push
 ```
 
 **Chúc bạn thành công với Git và GitHub!**
+git config --global core.autocrlf true

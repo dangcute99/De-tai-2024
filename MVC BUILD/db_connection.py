@@ -36,12 +36,14 @@ class DatabaseConnection:
         try:
             cursor = self.connection.cursor()
             cursor.execute(f"CREATE DATABASE IF NOT EXISTS {database_name}")
-            print(f"Database '{database_name}' created successfully.")
+            # print(f"Database '{database_name}' created successfully.")
         except Error as e:
             print(f"Error while creating database: {e}")
         finally:
             cursor.close()
             # self.connection.close()
+
+    import mysql.connector
 
     def execute_query(self, query, database):
         """Thực hiện một truy vấn SQL."""
@@ -55,13 +57,22 @@ class DatabaseConnection:
         try:
             cursor = connec.cursor()
             cursor.execute(query)
-            connec.commit()
-            print("Query executed successfully")
+
+            # Kiểm tra loại truy vấn
+            if query.strip().lower().startswith("select"):
+                result = cursor.fetchall()  # Đọc kết quả
+                return result  # Trả về kết quả
+
+            else:
+                connec.commit()  # Chỉ commit nếu không phải là SELECT
+                # print("Query executed successfully")
         except Error as e:
             print(f"Error: {e}")
         finally:
             if cursor is not None:  # Chỉ đóng cursor nếu nó đã được gán giá trị
                 cursor.close()
+            if connec.is_connected():  # Đảm bảo kết nối được đóng
+                connec.close()
 
     def close_connection(self):
         """Đóng kết nối với cơ sở dữ liệu."""
@@ -96,45 +107,95 @@ class DatabaseConnection:
                 cursor.close()
             connec.close()
 
+    # def insert_multiple_values(self, database, table, data):
+    #     """
+    #     Thêm nhiều giá trị vào bảng cùng một lúc.
+
+    #     :param database: Tên cơ sở dữ liệu
+    #     :param table: Tên bảng
+    #     :param data: Dictionary chứa dữ liệu cần chèn
+    #     """
+    #     timestamp = datetime.now()
+
+    #     columns = ["timestamp"]
+    #     values = [timestamp]
+    #     placeholders = ["%s"]
+
+    #     for column, value in data.items():
+    #         if isinstance(value, dict):
+    #             columns.append(column)
+    #             values.append(value['value'])
+    #             placeholders.append("%s")
+
+    #             if column in ['temperature', 'humidity']:
+    #                 columns.append(f"{column}_low")
+    #                 columns.append(f"{column}_high")
+    #                 values.append(value.get('low', None))
+    #                 values.append(value.get('high', None))
+    #                 placeholders.extend(["%s"] * 2)
+    #             elif column in ['dc1_voltage', 'dc2_voltage']:
+    #                 columns.append(f"{column}_low_1")
+    #                 columns.append(f"{column}_low_2")
+    #                 columns.append(f"{column}_high")
+    #                 values.append(value.get('low_1', None))
+    #                 values.append(value.get('low_2', None))
+    #                 values.append(value.get('high', None))
+    #                 placeholders.extend(["%s"] * 3)
+    #         else:
+    #             columns.append(column)
+    #             values.append(value)
+    #             placeholders.append("%s")
+
+    #     columns_str = ", ".join(columns)
+    #     placeholders_str = ", ".join(placeholders)
+
+    #     query = f"""
+    #     INSERT INTO {table} ({columns_str})
+    #     VALUES ({placeholders_str})
+    #     """
+
+    #     connec = mysql.connector.connect(
+    #         host=self.host,
+    #         user=self.user,
+    #         password=self.password,
+    #         database=database
+    #     )
+    #     cursor = None
+    #     try:
+    #         cursor = connec.cursor()
+    #         cursor.execute(query, values)
+    #         connec.commit()
+    #         print(f"Đã thêm mới {len(data)} giá trị vào bảng {table}")
+    #     except Error as e:
+    #         print(f"Lỗi: {e}")
+    #     finally:
+    #         if cursor is not None:
+    #             cursor.close()
+    #         connec.close()
+
     def insert_multiple_values(self, database, table, data):
         """
         Thêm nhiều giá trị vào bảng cùng một lúc.
 
         :param database: Tên cơ sở dữ liệu
         :param table: Tên bảng
-        :param data: Dictionary chứa dữ liệu cần chèn
+        :param data: Dictionary chứa dữ liệu cần chèn, dạng {"username": "da", "password": ""}
         """
+        # Lấy thời gian hiện tại cho cột timestamp
         timestamp = datetime.now()
 
+        # Khởi tạo danh sách cột và giá trị
         columns = ["timestamp"]
         values = [timestamp]
         placeholders = ["%s"]
 
+        # Thêm các cột và giá trị từ data
         for column, value in data.items():
-            if isinstance(value, dict):
-                columns.append(column)
-                values.append(value['value'])
-                placeholders.append("%s")
+            columns.append(column)
+            values.append(value)
+            placeholders.append("%s")
 
-                if column in ['temperature', 'humidity']:
-                    columns.append(f"{column}_low")
-                    columns.append(f"{column}_high")
-                    values.append(value.get('low', None))
-                    values.append(value.get('high', None))
-                    placeholders.extend(["%s"] * 2)
-                elif column in ['dc1_voltage', 'dc2_voltage']:
-                    columns.append(f"{column}_low_1")
-                    columns.append(f"{column}_low_2")
-                    columns.append(f"{column}_high")
-                    values.append(value.get('low_1', None))
-                    values.append(value.get('low_2', None))
-                    values.append(value.get('high', None))
-                    placeholders.extend(["%s"] * 3)
-            else:
-                columns.append(column)
-                values.append(value)
-                placeholders.append("%s")
-
+        # Chuẩn bị câu truy vấn
         columns_str = ", ".join(columns)
         placeholders_str = ", ".join(placeholders)
 
@@ -143,6 +204,7 @@ class DatabaseConnection:
         VALUES ({placeholders_str})
         """
 
+        # Thực hiện kết nối với cơ sở dữ liệu và chèn dữ liệu
         connec = mysql.connector.connect(
             host=self.host,
             user=self.user,
@@ -154,41 +216,13 @@ class DatabaseConnection:
             cursor = connec.cursor()
             cursor.execute(query, values)
             connec.commit()
-            print(f"Đã thêm mới {len(data)} giá trị vào bảng {table}")
+            print(f"Đã thêm mới một bản ghi vào bảng {table}")
         except Error as e:
             print(f"Lỗi: {e}")
         finally:
             if cursor is not None:
                 cursor.close()
             connec.close()
-
-    # def get_latest_non_null_value(self, database, table, column):
-    #     query = f"""
-    #     SELECT id, {column}
-    #     FROM {table}
-    #     WHERE {column} IS NOT NULL
-    #     ORDER BY id DESC
-    #     LIMIT 1
-    #     """
-    #     connec = mysql.connector.connect(
-    #         host=self.host,
-    #         user=self.user,
-    #         password=self.password,
-    #         database=database
-    #     )
-    #     cursor = None
-    #     try:
-    #         cursor = connec.cursor()
-    #         cursor.execute(query)
-    #         result = cursor.fetchone()
-    #         return result  # Trả về tuple (id, value)
-    #     except Error as e:
-    #         print(f"Lỗi: {e}")
-    #         return None
-    #     finally:
-    #         if cursor is not None:
-    #             cursor.close()
-    #         connec.close()
 
     def get_cell_value_by_id(self, database, table, column, id):
         query = f"""

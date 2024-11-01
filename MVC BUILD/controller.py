@@ -21,11 +21,15 @@ class Controller():
         self.my_view.ui.connect_load_login_info(self.load_login_in4())
 
     def handle_login(self):
-        login_data = self.save_checkbox()
+        self.save_checkbox()
+        login_data = self.my_view.ui.return_login_in4()
         in_4 = self.load_sql_login_in4()
         self.my_model = Model(in_4)
         if (self.my_model.check_connection()):
-            self.my_view.ui.return_sql_status(True)
+            if self.my_model.return_user_exists(login_data):
+                print("Đăng nhập thành công")
+            else:
+                self.my_view.ui.return_login_status(False)
         else:
             self.my_view.ui.return_sql_status(False)
 

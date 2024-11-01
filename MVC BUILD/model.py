@@ -34,7 +34,7 @@ create_table_faults_query = """CREATE TABLE IF NOT EXISTS faults (
     FOREIGN KEY (measurement_id) REFERENCES measurements(id)
 );
 """
-create_table_user_query = """CREATE TABLE IF NOT EXISTS users (
+create_table_login_in4_query = """CREATE TABLE IF NOT EXISTS login_in4 (
     id INT AUTO_INCREMENT PRIMARY KEY,
     timestamp DATETIME NOT NULL,
     username VARCHAR(255),
@@ -60,9 +60,41 @@ create_table_user_query = """CREATE TABLE IF NOT EXISTS users (
 class Model:
     def __init__(self, db_config):
         self.db = DatabaseConnection(**db_config)
+        if self.check_connection():
+            self.create_table_in4_if_not_exists()
+        else:
+            print("Không thể kết nối đến MySQL Server")
 
     def check_connection(self):
         return self.db.check_connection()
+
+    def create_table_in4_if_not_exists(self):
+        self.db.create_database('data')
+        self.db.execute_query(create_table_login_in4_query, 'data')
+        users_data = {'username': 'admin', 'password': '123456'}
+        if not (self.user_exists('login_in4', users_data)):
+            self.insert_multiple_values('data', 'login_in4', users_data)
+
+    def return_user_exists(self, users_data):
+        return self.user_exists('login_in4', users_data)
+
+    def user_exists(self, table, users_data):
+        # Lấy giá trị username và passwords từ dictionary users_data
+        username = users_data.get('username')
+        password = users_data.get('password')
+        # print(username, password)
+        # Truy vấn kiểm tra xem người dùng có tồn tại trong bảng login_in4 không
+        query = f"SELECT COUNT(*) FROM {table}  WHERE username = '{
+            username}' AND passwords = '{password}'"
+
+        # Gọi execute_query để kiểm tra sự tồn tại của username và password
+        result = self.db.execute_query(query, 'data')
+
+        # Kiểm tra kết quả của truy vấn
+        if result and result[0][0] > 0:
+            return True  # Người dùng tồn tại
+        else:
+            return False  # Người dùng không tồn tại
 
     def get_x_values_latest(self, database, table, column_name, x=1):
         latest_data = self.db.get_x_notnull(
@@ -135,3 +167,5 @@ class Model:
 
         # db.close_connection()
         # ###########################################################################################
+# db_config = {'host': 'localhost', 'username': 'root', 'password': '992002'}
+# model = Model(db_config)
