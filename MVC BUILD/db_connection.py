@@ -1,4 +1,4 @@
-import db_in4
+
 import mysql.connector
 from mysql.connector import Error
 from datetime import datetime
