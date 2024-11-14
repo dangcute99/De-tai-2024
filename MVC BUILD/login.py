@@ -193,6 +193,7 @@ class Ui_API(object):
         self.dong_4 = QtWidgets.QLabel(parent=self.gridLayoutWidget)
         font = QtGui.QFont()
         font.setPointSize(10)
+
         self.dong_4.setFont(font)
         self.dong_4.setStyleSheet(
             "color: rgb(0, 0, 0); ")
@@ -200,6 +201,7 @@ class Ui_API(object):
         self.dong_4.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight |
                                  QtCore.Qt.AlignmentFlag.AlignTrailing | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.dong_4.setObjectName("dong_4")
+
         self.gridLayout.addWidget(self.dong_4, 5, 3, 1, 1)
         self.gridLayout.addWidget(self.taikhoan1_2, 6, 2, 1, 1)
         self.dong_3 = QtWidgets.QLabel(parent=self.gridLayoutWidget)

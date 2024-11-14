@@ -3,22 +3,27 @@ from model import Model
 from view import View
 import os
 import json
+tentram = ["Phòng 302", "Trạm BĐKT", "Trạm 3", "Trạm 4", "Trạm 5", "Trạm 6", "Trạm 7", "Trạm 8",
+           "Trạm 9", "Trạm 10", "Trạm 11", "Trạm 12", "Trạm 13", "Trạm 14", "Trạm 15", "Trạm 16"]
 
 
 class Controller():
-    def __init__(self, main_window):  # , main_window
+    def __init__(self, open_window):  # , main_window
         super().__init__()
         self.sql_login_window = None
+        self.open_window = open_window
         self.login_config_file_path = 'login_config.json'
         self.sql_config_file_path = 'sql_config.json'
         self.my_view = View()
         # Thiết lập UI cho View với đối tượng main_window
-        self.my_view.ui.setupUi(main_window)
+        self.my_view.ui.setupUi(open_window)
         self.my_view.ui.connect_login_button(self.handle_login)
         self.my_view.ui.connect_sql_setting_button(self.on_sql_setting_clicked)
         self.create_config_file()
         # self.load_login_data()
         self.my_view.ui.connect_load_login_info(self.load_login_in4())
+################################################################
+# link với login
 
     def handle_login(self):
         self.save_checkbox()
@@ -28,6 +33,11 @@ class Controller():
         if (self.my_model.check_connection()):
             if self.my_model.return_user_exists(login_data):
                 print("Đăng nhập thành công")
+                if self.sql_login_window and self.sql_login_window.isVisible():
+                    self.sql_login_window.close()
+                self.open_window.close()  # Close the main window
+                self.open_main_window()
+
             else:
                 self.my_view.ui.return_login_status(False)
         else:
@@ -87,12 +97,15 @@ class Controller():
         else:
             self.sql_login_window.close()  # Đóng cửa sổ nếu nó đã mở
         self.my_view.sql_login.load_sql_data(self.load_sql_login_in4())
+########################################################################
+# link với sql_setting
 
     def load_sql_login_in4(self):
         with open(self.sql_config_file_path, 'r') as file:
             # Đọc và chuyển đổi nội dung tệp JSON thành dictionary
             sql_login_data = json.load(file)
             return sql_login_data
+#######################################################################
 
     def create_config_file(self):
         if not os.path.exists(self.login_config_file_path):
@@ -103,6 +116,52 @@ class Controller():
             with open(self.sql_config_file_path, 'w') as config_file:
                 json.dump({"host": "localhost", "username": "123",
                           "password": "992002"}, config_file)
+################################################################
+# link với main_window
+
+    def open_main_window(self):
+        self.my_view.main.show()
+        self.my_view.main.set_tentram(tentram)
+        self.my_view.main.connect_anh_tram_1_button(self.anh_tram_1_button)
+        self.my_view.main.connect_anh_tram_2_button(self.anh_tram_2_button)
+        self.my_view.main.connect_anh_tram_3_button(self.anh_tram_3_button)
+        self.my_view.main.connect_anh_tram_4_button(self.anh_tram_4_button)
+        self.my_view.main.connect_anh_tram_5_button(self.anh_tram_5_button)
+        self.my_view.main.connect_home_button(self.home_button)
+
+    def anh_tram_1_button(self):
+        print("anh tram 1")
+        self.my_view.main.switch_page(1)
+        self.my_view.main.switch_ten_tram(tentram[0])
+        self.my_view.main.hienthi.setCurrentIndex(0)
+
+    def anh_tram_2_button(self):
+        print("anh tram 2")
+        self.my_view.main.switch_page(1)
+        self.my_view.main.switch_ten_tram(tentram[1])
+        self.my_view.main.hienthi.setCurrentIndex(1)
+
+    def anh_tram_3_button(self):
+        print("anh tram 3")
+        self.my_view.main.switch_page(1)
+        self.my_view.main.switch_ten_tram(tentram[2])
+        self.my_view.main.hienthi.setCurrentIndex(2)
+
+    def anh_tram_4_button(self):
+        print("anh tram 4")
+        self.my_view.main.switch_page(1)
+        self.my_view.main.switch_ten_tram(tentram[3])
+        self.my_view.main.hienthi.setCurrentIndex(3)
+
+    def anh_tram_5_button(self):
+        print("anh tram 5")
+        self.my_view.main.switch_page(1)
+        self.my_view.main.switch_ten_tram(tentram[4])
+        self.my_view.main.hienthi.setCurrentIndex(4)
+
+    def home_button(self):
+        self.my_view.main.switch_page(0)
+################################################################
 
 
 if __name__ == "__main__":
