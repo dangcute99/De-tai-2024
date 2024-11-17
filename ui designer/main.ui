@@ -1965,12 +1965,9 @@ border-radius:15px</string>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="ten_tram_2">
+              <widget class="QPushButton" name="chung_tram">
                <property name="text">
-                <string>Tên trạm</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <string>tên trạm</string>
                </property>
               </widget>
              </item>
@@ -2100,7 +2097,7 @@ border-radius:15px</string>
              </property>
              <property name="styleSheet">
               <string notr="true">color:white;
-bordoer-radius:20px
+border-radius:20px
 
 </string>
              </property>
@@ -2119,7 +2116,7 @@ bordoer-radius:20px
 </string>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="chung">
            <widget class="QWidget" name="verticalLayoutWidget">
@@ -2543,6 +2540,12 @@ font-pointSize
                  <height>30</height>
                 </size>
                </property>
+               <property name="checkable">
+                <bool>false</bool>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextUnderIcon</enum>
                </property>
@@ -2682,6 +2685,30 @@ font-pointSize
             </property>
             <property name="text">
              <string>Sự cố</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="in4">
+           <widget class="QLabel" name="HDSD">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>20</y>
+              <width>1131</width>
+              <height>61</height>
+             </rect>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Hướng dẫn dử dụng</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>

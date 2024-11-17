@@ -236,13 +236,14 @@
       "weight": "bold"
     }
   },
-  "ten_tram_2": {
+  "chung_tram": {
     "color": "black",
     "font": {
       "family": "Arial",
       "size": 15,
       "weight": "bold"
-    }
+    },
+    "border-radius": "10px"
   },
   
   "temp_value": {
@@ -346,6 +347,15 @@
     }
   },
   "bieudo_suco": {
+    "color":"black",
+
+    "font": {
+      "family": "Arial",
+      "size": 18,
+      "weight": "bold"
+    }
+  },
+  "HDSD": {
     "color":"black",
 
     "font": {

@@ -122,45 +122,84 @@ class Controller():
     def open_main_window(self):
         self.my_view.main.show()
         self.my_view.main.set_tentram(tentram)
+        ################################################################
         self.my_view.main.connect_anh_tram_1_button(self.anh_tram_1_button)
         self.my_view.main.connect_anh_tram_2_button(self.anh_tram_2_button)
         self.my_view.main.connect_anh_tram_3_button(self.anh_tram_3_button)
         self.my_view.main.connect_anh_tram_4_button(self.anh_tram_4_button)
         self.my_view.main.connect_anh_tram_5_button(self.anh_tram_5_button)
+        ################################################################
         self.my_view.main.connect_home_button(self.home_button)
+        self.my_view.main.connect_in4_button(self.in4_button)
+        ########################################################################
+        self.my_view.main.connect_temp_button(self.temp_button)
+        self.my_view.main.connect_humi_button(self.humi_button)
+        self.my_view.main.connect_dc_button(self.dc_button)
+        self.my_view.main.connect_error_button(self.error_button)
+        self.my_view.main.connect_chung_tram_button(self.chung_tram_button)
 
+    ################################################################
     def anh_tram_1_button(self):
-        print("anh tram 1")
+        if not self.my_view.main.tram.isVisible():
+            self.my_view.main.tram.setVisible(True)
         self.my_view.main.switch_page(1)
         self.my_view.main.switch_ten_tram(tentram[0])
         self.my_view.main.hienthi.setCurrentIndex(0)
 
     def anh_tram_2_button(self):
-        print("anh tram 2")
+        if not self.my_view.main.tram.isVisible():
+            self.my_view.main.tram.setVisible(True)
         self.my_view.main.switch_page(1)
         self.my_view.main.switch_ten_tram(tentram[1])
-        self.my_view.main.hienthi.setCurrentIndex(1)
+        self.my_view.main.hienthi.setCurrentIndex(0)
 
     def anh_tram_3_button(self):
         print("anh tram 3")
         self.my_view.main.switch_page(1)
         self.my_view.main.switch_ten_tram(tentram[2])
-        self.my_view.main.hienthi.setCurrentIndex(2)
+        self.my_view.main.hienthi.setCurrentIndex(0)
 
     def anh_tram_4_button(self):
         print("anh tram 4")
         self.my_view.main.switch_page(1)
         self.my_view.main.switch_ten_tram(tentram[3])
-        self.my_view.main.hienthi.setCurrentIndex(3)
+        self.my_view.main.hienthi.setCurrentIndex(0)
 
     def anh_tram_5_button(self):
         print("anh tram 5")
         self.my_view.main.switch_page(1)
         self.my_view.main.switch_ten_tram(tentram[4])
-        self.my_view.main.hienthi.setCurrentIndex(4)
+        self.my_view.main.hienthi.setCurrentIndex(0)
+    ################################################################
 
     def home_button(self):
         self.my_view.main.switch_page(0)
+
+    def in4_button(self):
+        # Kiểm tra trạng thái hiện tại của widget và đảo ngược nó
+        if self.my_view.main.tram.isVisible():
+            self.my_view.main.tram.setVisible(
+                False)  # Ẩn widget nếu đang hiển thị
+            self.my_view.main.hienthi.setCurrentIndex(5)
+        else:
+            self.my_view.main.tram.setVisible(
+                True)   # Hiển thị widget nếu đang ẩn
+    ################################################################
+
+    def temp_button(self):
+        self.my_view.main.hienthi.setCurrentIndex(1)
+
+    def humi_button(self):
+        self.my_view.main.hienthi.setCurrentIndex(2)
+
+    def dc_button(self):
+        self.my_view.main.hienthi.setCurrentIndex(3)
+
+    def error_button(self):
+        self.my_view.main.hienthi.setCurrentIndex(4)
+
+    def chung_tram_button(self):
+        self.my_view.main.hienthi.setCurrentIndex(0)
 ################################################################
 
 

@@ -122,20 +122,25 @@ class MainWindow(QtWidgets.QMainWindow):
     def connect_dc_button(self, slot):
         self.dc_button.clicked.connect(slot)
 
+    def connect_chung_tram_button(self, slot):
+        self.chung_tram.clicked.connect(slot)
+
     def switch_page(self, index):
         self.stackedWidget.setCurrentIndex(index)
 
     def switch_ten_tram(self, name):
         self.ten_tram.setText(name)
-        self.ten_tram_2.setText(name)
+        self.chung_tram.setText(name)
 
-    # # @staticmethod
-    # def main(self):
-    #     app = QtWidgets.QApplication(sys.argv)
-    #     window = MainWindow()
-    #     window.show()
-    #     sys.exit(app.exec())
+    # def plot_temp_value(self, value):
 
-# # Gọi phương thức main từ bên ngoài lớp
-# if __name__ == "__main__":
-#     MainWindow.main()
+        # # @staticmethod
+        # def main(self):
+        #     app = QtWidgets.QApplication(sys.argv)
+        #     window = MainWindow()
+        #     window.show()
+        #     sys.exit(app.exec())
+
+        # # Gọi phương thức main từ bên ngoài lớp
+        # if __name__ == "__main__":
+        #     MainWindow.main()
