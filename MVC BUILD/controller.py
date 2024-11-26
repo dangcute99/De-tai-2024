@@ -3,6 +3,8 @@ from model import Model
 from view import View
 import os
 import json
+from datetime import datetime
+
 tentram = ["Phòng 302", "Trạm BĐKT", "Trạm 3", "Trạm 4", "Trạm 5", "Trạm 6", "Trạm 7", "Trạm 8",
            "Trạm 9", "Trạm 10", "Trạm 11", "Trạm 12", "Trạm 13", "Trạm 14", "Trạm 15", "Trạm 16"]
 
@@ -22,6 +24,46 @@ class Controller():
         self.create_config_file()
         # self.load_login_data()
         self.my_view.ui.connect_load_login_info(self.load_login_in4())
+
+        self.data_points = [
+            (datetime(2024, 11, 1, 14, 30), 22),
+            (datetime(2024, 11, 1, 14, 35), 12),
+            (datetime(2024, 11, 1, 14, 37), 83),
+            (datetime(2024, 11, 1, 14, 42), 50),
+            (datetime(2024, 11, 1, 15, 45), 28),
+            (datetime(2024, 11, 1, 15, 50), 26),
+            (datetime(2024, 11, 1, 15, 56), 24),
+            (datetime(2024, 11, 1, 16, 5), 62),
+            (datetime(2024, 11, 1, 16, 10), 20),
+            (datetime(2024, 11, 1, 16, 15), 12),
+            (datetime(2024, 11, 1, 16, 20), 8),
+            (datetime(2024, 11, 1, 16, 30), 35),
+            (datetime(2024, 11, 1, 18, 40), 82),
+
+        ]
+        self.data_points_2 = [
+            (datetime(2024, 11, 1, 11, 30), 22),
+            (datetime(2024, 11, 1, 12, 35), 12),
+            (datetime(2024, 11, 1, 13, 37), 25),
+            (datetime(2024, 11, 1, 13, 42), 50),
+            (datetime(2024, 11, 1, 13, 45), 28),
+            (datetime(2024, 11, 1, 14, 50), 26),
+            (datetime(2024, 11, 1, 14, 56), 24),
+            (datetime(2024, 11, 1, 15, 5), 58),
+            (datetime(2024, 11, 1, 16, 10), 20),
+            (datetime(2024, 11, 1, 16, 15), 12),
+            (datetime(2024, 11, 1, 16, 20), 50),
+            (datetime(2024, 11, 1, 16, 30), 35),
+            (datetime(2024, 11, 1, 17, 40), 90),
+
+        ]
+        self.temp_1 = 19
+        self.temp_2 = 30
+        self.humi_1 = 50
+        self.humi_2 = 70
+        self.dc_1 = 40
+        self.dc_2 = 55
+        self.dc_3 = 70
 ################################################################
 # link với login
 
@@ -130,7 +172,6 @@ class Controller():
         self.my_view.main.connect_anh_tram_5_button(self.anh_tram_5_button)
         ################################################################
         self.my_view.main.connect_home_button(self.home_button)
-        self.my_view.main.connect_in4_button(self.in4_button)
         ########################################################################
         self.my_view.main.connect_temp_button(self.temp_button)
         self.my_view.main.connect_humi_button(self.humi_button)
@@ -188,12 +229,18 @@ class Controller():
 
     def temp_button(self):
         self.my_view.main.hienthi.setCurrentIndex(1)
+        self.my_view.main.ve_bieu_do_nhiet_do(
+            self.data_points, self.temp_1, self.temp_2)
 
     def humi_button(self):
         self.my_view.main.hienthi.setCurrentIndex(2)
+        self.my_view.main.ve_bieu_do_do_am(
+            self.data_points, self.humi_1, self.humi_2)
 
     def dc_button(self):
         self.my_view.main.hienthi.setCurrentIndex(3)
+        self.my_view.main.ve_bieu_do_dc(
+            self.data_points, self.data_points_2, self.dc_1, self.dc_2, self.dc_3)
 
     def error_button(self):
         self.my_view.main.hienthi.setCurrentIndex(4)

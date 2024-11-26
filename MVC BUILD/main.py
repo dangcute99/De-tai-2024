@@ -1,7 +1,13 @@
 from PyQt6.QtCore import QSize
+from PyQt6 import QtCore
 import sys
 import json
 from PyQt6 import QtWidgets, uic, QtGui
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import matplotlib.pyplot as plt
+from PyQt6.QtWidgets import QSizePolicy
+import matplotlib.dates as mdates
+from PyQt6.QtCore import QTimer, QDateTime
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -15,18 +21,22 @@ class MainWindow(QtWidgets.QMainWindow):
         self.load_json_style(
             r"C:\Users\ASUS\OneDrive\My Computer\ui\MVC BUILD\style.json")
         self.stackedWidget.setCurrentWidget(self.page_1)
-        # self.label.setPointSize(10)
-        # Lấy tổng số trang
-        # total_pages = self.stackedWidget.count()
 
-        # # Lấy chỉ số của trang hiện tại
-        # current_page = self.stackedWidget.currentIndex()
-        # print(f"Current page: {current_page}")
-        # print(f"Total pages: {total_pages}")
-        # current_widget = self.stackedWidget.currentWidget()
-        # print(f"Trang hiện tại là: {current_widget.objectName()}")
-        # # Chuyển đến trang "page2"
-        # self.stackedWidget.setCurrentWidget(self.page_2)
+        self.temp_chart_bit = False
+        self.humi_chart_bit = False
+        self.dc_chart_bit = False
+        # tạo nút HDSD động
+        self.in4_button = self.create_draggable_button(
+            "", "Hướng dẫn sử dụng!", self)
+        self.in4_button.move(1350, 750)
+
+        # Tạo QTimer để cập nhật thời gian
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_time)
+        self.timer.start(1000)  # Cập nhật mỗi 1000ms (1 giây)
+        # Hiển thị thời gian ngay khi khởi động
+        self.update_time()
+
     def set_tentram(self, tentram):
         # Thiết lập tên cho các trạm
         for i in range(1, 17):  # Dùng 1 đến 16 vì có 16 trạm
@@ -83,6 +93,19 @@ class MainWindow(QtWidgets.QMainWindow):
         except Exception as e:
             print(f"Error loading JSON style: {e}")
 
+    def update_time(self):
+        # Lấy thời gian hiện tại
+        current_time = QDateTime.currentDateTime()
+
+        # Tạo chuỗi thời gian (giờ:phút:giây)
+        time_str = current_time.toString("HH:mm:ss")
+
+        # Tạo chuỗi ngày tháng năm
+        date_str = current_time.toString("dd/MM/yyyy")
+
+        # Cập nhật nội dung cho QLabel (thời gian ở trên, ngày tháng ở dưới)
+        self.time_label.setText(f"{time_str}\n{date_str}")
+
     def connect_anh_tram_1_button(self, slot):
         self.anhtram_1.clicked.connect(slot)
 
@@ -103,9 +126,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def connect_mute_button(self, slot):
         self.mute_button.clicked.connect(slot)
-
-    def connect_in4_button(self, slot):
-        self.in4_button.clicked.connect(slot)
 
     def connect_setting_button(self, slot):
         self.setting_button.clicked.connect(slot)
@@ -132,15 +152,790 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ten_tram.setText(name)
         self.chung_tram.setText(name)
 
-    # def plot_temp_value(self, value):
+    def ve_bieu_do_nhiet_do(self, data_points, temp_1, temp_2):
+        if not self.temp_chart_bit:  # Kiểm tra cờ
+            self.stackedWidget.setCurrentWidget(self.page_2)
+            self.plot_temperature_chart_in_widget(
+                data_points, temp_1, temp_2)
+            self.temp_chart_bit = True  # Đặt cờ thành True sau khi vẽ
+        else:
+            print("Biểu đồ nhiet do đã được vẽ trước đó, không cần vẽ lại.")
 
-        # # @staticmethod
-        # def main(self):
-        #     app = QtWidgets.QApplication(sys.argv)
-        #     window = MainWindow()
-        #     window.show()
-        #     sys.exit(app.exec())
+    def ve_bieu_do_do_am(self, data_points, humi_1, humi_2):
+        if not self.humi_chart_bit:  # Kiểm tra cờ
+            self.stackedWidget.setCurrentWidget(self.page_2)
+            self.plot_humidity_chart_in_widget(
+                data_points, humi_1, humi_2)
+            self.humi_chart_bit = True  # Đặt cờ thành True sau khi vẽ
+        else:
+            print("Biểu đồ độ ẩm đã được vẽ trước đó, không cần vẽ lại.")
 
-        # # Gọi phương thức main từ bên ngoài lớp
-        # if __name__ == "__main__":
-        #     MainWindow.main()
+    def ve_bieu_do_dc(self, data_points, data_points_2, dc_1, dc_2, dc_3):
+        if not self.dc_chart_bit:  # Kiểm tra cờ
+            self.stackedWidget.setCurrentWidget(self.page_2)
+            self.plot_voltage_chart_in_widget(
+                data_points, data_points_2, dc_1, dc_2, dc_3)
+            self.dc_chart_bit = True  # Đặt cờ thành True sau khi vẽ
+        else:
+            print("Biểu đồ điện áp DC đã được vẽ trước đó, không cần vẽ lại.")
+
+    def plot_temperature_chart_in_widget(self, data_points, temp_1, temp_2):
+        """
+        Vẽ biểu đồ nhiệt độ với tooltip thông minh tự động điều chỉnh vị trí
+        """
+        parent_widget = self.temp_chart
+        figure, ax = plt.subplots(figsize=(12, 6))
+
+        # Tách ngày giờ và nhiệt độ
+        dates, temperatures = zip(*data_points)
+
+        # Vẽ đường nhiệt độ chính
+        ax.plot(dates, temperatures, color='#0088FF',
+                linestyle='-', linewidth=1, label="Đường nhiệt độ")
+
+        # Vẽ các điểm dữ liệu và đường kẻ dọc
+        for date, temp in data_points:
+            color = 'red' if temp > temp_2 or temp < temp_1 else '#00FF00'
+            ax.scatter(date, temp, color=color, s=50)
+            ax.plot([date, date], [0, temp], color='gray',
+                    linestyle='-', linewidth=0.5, alpha=0.3)
+
+            # Vẽ các đường ngưỡng
+        ax.axhline(y=temp_1, color='#35ff00', linestyle='--',
+                   linewidth=1, label=f"Ngưỡng {temp_1}°C")
+        ax.axhline(y=temp_2, color='#f600ff', linestyle='-.',
+                   linewidth=1, label=f"Ngưỡng {temp_2}°C")
+
+        # Định dạng trục thời gian
+        time_format = mdates.DateFormatter("%H:%M")
+        ax.xaxis.set_major_formatter(time_format)
+        ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+
+        # Thiết lập nhãn trục và tiêu đề
+        ax.set_xlabel("Thời gian", fontsize=10)
+        ax.xaxis.set_label_coords(0.95, -0.05)
+        ax.set_ylabel("Nhiệt độ (°C)", fontsize=10)
+        ax.yaxis.set_label_coords(-0.03, 0.9)
+        figure.text(0.5, 0.1, "Biểu đồ nhiệt độ", fontsize=14,
+                    ha='center', fontweight='bold')
+        ax.legend(loc='best')
+        ax.grid(False)
+
+        # Tối ưu layout
+        plt.tight_layout()
+        figure.autofmt_xdate()
+
+        # Tạo canvas và thêm vào widget
+        canvas = FigureCanvas(figure)
+        layout = parent_widget.layout()
+        if not layout:
+            layout = QtWidgets.QVBoxLayout(parent_widget)
+            parent_widget.setLayout(layout)
+        layout.addWidget(canvas)
+
+        # Tạo annotation cho tooltip với style mới
+        annot = ax.annotate(
+            "",
+            xy=(0, 0),
+            xytext=(0, 0),
+            textcoords="offset points",
+            bbox=dict(
+                boxstyle="round4,pad=0.5",
+                fc="white",
+                ec="gray",
+                alpha=0.9,
+                mutation_scale=0.8
+            ),
+            arrowprops=dict(
+                arrowstyle="-|>",
+                connectionstyle="arc3,rad=0.2",
+                color='gray'
+            )
+        )
+        annot.set_visible(False)
+
+        def get_smart_offset(date, temp, ax_bbox):
+            """
+            Tính toán offset thông minh cho tooltip dựa trên vị trí của điểm và kích thước của đồ thị
+            """
+            x_rel = (mdates.date2num(date) - ax.get_xlim()
+                     [0]) / (ax.get_xlim()[1] - ax.get_xlim()[0])
+            y_rel = (temp - ax.get_ylim()[0]) / \
+                (ax.get_ylim()[1] - ax.get_ylim()[0])
+
+            # Offset mặc định
+            x_offset = 10
+            y_offset = 10
+
+            # Điều chỉnh theo vị trí tương đối
+            if x_rel > 0.8:  # Gần mép phải
+                x_offset = -80
+            elif x_rel < 0.2:  # Gần mép trái
+                x_offset = 20
+
+            if y_rel > 0.8:  # Gần mép trên
+                y_offset = -40
+            elif y_rel < 0.2:  # Gần mép dưới
+                y_offset = 20
+
+            return x_offset, y_offset
+
+        def on_hover(event):
+            if event.inaxes == ax:
+                hit = False
+                for date, temp in data_points:
+                    # Tăng độ nhạy của vùng hover
+                    if abs(event.xdata - mdates.date2num(date)) <= 0.001 and abs(event.ydata - temp) <= 1:
+                        hit = True
+                        # Lấy offset thông minh
+                        x_offset, y_offset = get_smart_offset(
+                            date, temp, ax.bbox)
+
+                        # Cập nhật vị trí và thuộc tính của tooltip
+                        annot.xy = (mdates.date2num(date), temp)
+                        annot.set_position((x_offset, y_offset))
+
+                        # Định dạng nội dung tooltip
+                        tooltip_text = (
+                            f"Ngày: {date.strftime('%d/%m/%Y')}\n"
+                            f"Thời gian: {date.strftime('%H:%M')}\n"
+                            f"Nhiệt độ: {temp}°C"
+                        )
+                        if temp > temp_2:
+                            tooltip_text += "\n⚠️ Nhiệt độ cao"
+                        elif temp < temp_1:
+                            tooltip_text += "\n⚠️ Nhiệt độ thấp"
+
+                        annot.set_text(tooltip_text)
+
+                        # Đổi màu tooltip theo trạng thái nhiệt độ
+                        if temp > temp_2 or temp < temp_1:
+                            annot.get_bbox_patch().set(fc="#F01F1F")
+                        else:
+                            annot.get_bbox_patch().set(fc="#00FF00")
+
+                        annot.set_visible(True)
+                        canvas.draw_idle()
+                        break
+
+                if not hit and annot.get_visible():
+                    annot.set_visible(False)
+                    canvas.draw_idle()
+
+        canvas.mpl_connect("motion_notify_event", on_hover)
+        canvas.setSizePolicy(QSizePolicy.Policy.Expanding,
+                             QSizePolicy.Policy.Expanding)
+
+    # def create_draggable_button(parent=None):
+    #     # Tạo đối tượng nút bấm kéo
+    #     button = QtWidgets.QPushButton("Drag me", parent)
+
+    #     # Cấu hình font tooltip toàn cục
+    #     QtWidgets.QToolTip.setFont(QtGui.QFont('Arial', 10))
+
+    #     # Cấu hình nút
+    #     button.setFixedSize(50, 50)
+    #     button.setStyleSheet("""
+    #         QPushButton {
+    #             background-color: lightblue;
+    #             border: 2px solid black;
+    #             border-radius: 25px;
+    #             color: black;
+
+    #         }
+    #         QPushButton:hover {
+    #             background-color: skyblue;
+    #         }
+    #     """)
+
+    #     # Bật theo dõi chuột
+    #     button.setMouseTracking(True)
+
+    #     # Thuộc tính kéo
+    #     button._drag_active = False
+    #     button._drag_start_position = None
+
+    #     # Xử lý sự kiện tooltip khi chuột vào nút
+    #     def event(event):
+    #         if event.type() == QtWidgets.QEvent.Type.ToolTip:
+    #             QtWidgets.QToolTip.showText(
+    #                 button.mapToGlobal(event.pos()),
+    #                 "HDSD: Kéo nút hoặc nhấn đúp chuột!"
+    #             )
+    #             return True
+    #         return super(QtWidgets.QPushButton, button).event(event)
+
+    #     # Hiển thị tooltip khi chuột vào nút
+    #     def enterEvent(event):
+    #         QtWidgets.QToolTip.showText(
+    #             button.mapToGlobal(QtCore.QPoint(0, 0)),
+    #             "HDSD: Kéo nút hoặc nhấn đúp chuột!"
+    #         )
+    #         # print("Chuột đã vào nút")
+    #         super(QtWidgets.QPushButton, button).enterEvent(event)
+
+    #     # Bắt đầu kéo
+    #     def mousePressEvent(event):
+    #         if event.button() == QtCore.Qt.MouseButton.LeftButton:
+    #             button._drag_active = True
+    #             # Lưu vị trí bắt đầu kéo
+    #             button._drag_start_position = event.globalPosition().toPoint() - button.pos()
+    #             # print("Bắt đầu kéo")
+    #         super(QtWidgets.QPushButton, button).mousePressEvent(event)
+
+    #     # Di chuyển nút khi kéo
+    #     def mouseMoveEvent(event):
+    #         if button._drag_active and event.buttons() == QtCore.Qt.MouseButton.LeftButton:
+    #             # Tính toán vị trí mới dựa trên vị trí kéo
+    #             new_pos = event.globalPosition().toPoint() - button._drag_start_position
+
+    #             # Lấy kích thước của `QFrame` cha
+    #             parent_rect = button.parent().rect()
+    #             parent_pos = button.parent().mapToGlobal(parent_rect.topLeft())
+
+    #             # Giới hạn vị trí để nút không vượt khỏi khung cha
+    #             min_x = parent_pos.x()
+    #             min_y = parent_pos.y()
+    #             max_x = min_x + parent_rect.width() - button.width()
+    #             max_y = min_y + parent_rect.height() - button.height()
+
+    #             # Ràng buộc vị trí mới vào trong vùng cho phép
+    #             new_pos.setX(max(min_x, min(new_pos.x(), max_x)))
+    #             new_pos.setY(max(min_y, min(new_pos.y(), max_y)))
+
+    #             # Di chuyển nút đến vị trí mới
+    #             button.move(button.parent().mapFromGlobal(new_pos))
+    #         super(QtWidgets.QPushButton, button).mouseMoveEvent(event)
+
+    #     # def mouseMoveEvent(event):
+    #     #     if button._drag_active and event.buttons() == QtCore.Qt.MouseButton.LeftButton:
+    #     #         # Di chuyển nút
+    #     #         new_pos = event.globalPosition().toPoint() - button._drag_start_position
+    #     #         button.move(new_pos)
+    #     #         # print(f"Đang kéo đến vị trí: {new_pos}")
+    #     #     super(QtWidgets.QPushButton, button).mouseMoveEvent(event)
+
+    #     # Kết thúc kéo
+    #     def mouseReleaseEvent(event):
+    #         if event.button() == QtCore.Qt.MouseButton.LeftButton:
+    #             button._drag_active = False
+    #             # print("Kết thúc kéo")
+    #         super(QtWidgets.QPushButton, button).mouseReleaseEvent(event)
+
+    #     # Nhấn đúp chuột
+    #     def mouseDoubleClickEvent(event):
+    #         if event.button() == QtCore.Qt.MouseButton.LeftButton:
+    #             print("Nhấn đúp!")
+    #         super(QtWidgets.QPushButton, button).mouseDoubleClickEvent(event)
+
+    #     # Gán các phương thức vào button
+    #     button.event = event
+    #     button.enterEvent = enterEvent
+    #     button.mousePressEvent = mousePressEvent
+    #     button.mouseMoveEvent = mouseMoveEvent
+    #     button.mouseReleaseEvent = mouseReleaseEvent
+    #     button.mouseDoubleClickEvent = mouseDoubleClickEvent
+
+    #     return button
+    # def create_draggable_button(parent=None):
+    #     button = QtWidgets.QPushButton("Drag me", parent)
+    #     button.setFixedSize(50, 50)
+    #     button.setStyleSheet("""
+    #         QPushButton {
+    #             background-color: lightblue;
+    #             border: 2px solid black;
+    #             border-radius: 25px;
+    #             color: black;
+    #         }
+    #         QPushButton:hover {
+    #             background-color: skyblue;
+    #         }
+    #     """)
+
+    #     button._drag_active = False
+    #     button._drag_start_position = None
+
+    #     # Hiển thị tooltip khi chuột vào nút
+    #     def enterEvent(event):
+    #         QtWidgets.QToolTip.showText(
+    #             button.mapToGlobal(QtCore.QPoint(
+    #                 button.width() // 2, button.height() // 2)),
+    #             "HDSD: Kéo nút hoặc nhấn đúp chuột!"
+    #         )
+    #         super(QtWidgets.QPushButton, button).enterEvent(event)
+
+    #     def leaveEvent(event):
+    #         QtWidgets.QToolTip.hideText()
+    #         super(QtWidgets.QPushButton, button).leaveEvent(event)
+
+    #     # Xử lý sự kiện bắt đầu kéo
+    #     def mousePressEvent(event):
+    #         if event.button() == QtCore.Qt.MouseButton.LeftButton:
+    #             button._drag_active = True
+    #             button._drag_start_position = event.pos()
+    #         super(QtWidgets.QPushButton, button).mousePressEvent(event)
+
+    #     # Di chuyển nút khi kéo
+    #     def mouseMoveEvent(event):
+    #         if button._drag_active and event.buttons() == QtCore.Qt.MouseButton.LeftButton:
+    #             global_mouse_pos = event.globalPosition().toPoint()
+    #             new_pos = button.parent().mapFromGlobal(
+    #                 global_mouse_pos - button._drag_start_position)
+
+    #             # Giới hạn vị trí nút trong vùng cha
+    #             parent_rect = button.parent().rect()
+    #             new_pos.setX(
+    #                 max(0, min(new_pos.x(), parent_rect.width() - button.width())))
+    #             new_pos.setY(
+    #                 max(0, min(new_pos.y(), parent_rect.height() - button.height())))
+
+    #             button.move(new_pos)
+    #         super(QtWidgets.QPushButton, button).mouseMoveEvent(event)
+
+    #     # Kết thúc kéo
+    #     def mouseReleaseEvent(event):
+    #         if event.button() == QtCore.Qt.MouseButton.LeftButton:
+    #             button._drag_active = False
+    #         super(QtWidgets.QPushButton, button).mouseReleaseEvent(event)
+
+    #     button.enterEvent = enterEvent
+    #     button.leaveEvent = leaveEvent
+    #     button.mousePressEvent = mousePressEvent
+    #     button.mouseMoveEvent = mouseMoveEvent
+    #     button.mouseReleaseEvent = mouseReleaseEvent
+
+    #     return button
+    def create_draggable_button(self, name, tooltips, parent=None):
+        button = QtWidgets.QPushButton(name, parent)
+        button.setFixedSize(30, 30)
+        button.setStyleSheet("""
+            QPushButton {
+                background-color: lightblue;
+                border: 1px solid black;
+                border-radius: 15px;
+                color: black;
+                             font-family: dripicons-v2;
+                             font-size: 30px;
+            }
+            QPushButton:hover {
+                background-color: skyblue;
+            }
+        """)
+
+        button._drag_active = False
+        button._drag_start_position = None
+
+        # Hiển thị tooltip khi chuột vào nút
+        def enterEvent(event):
+            QtWidgets.QToolTip.showText(
+                button.mapToGlobal(QtCore.QPoint(
+                    button.width() // 2, button.height() // 2)),
+                tooltips
+            )
+            super(QtWidgets.QPushButton, button).enterEvent(event)
+
+        def leaveEvent(event):
+            QtWidgets.QToolTip.hideText()
+            super(QtWidgets.QPushButton, button).leaveEvent(event)
+
+        # Xử lý sự kiện bắt đầu kéo
+        def mousePressEvent(event):
+            if event.button() == QtCore.Qt.MouseButton.LeftButton:
+                button._drag_active = True
+                button._drag_start_position = event.pos()
+            super(QtWidgets.QPushButton, button).mousePressEvent(event)
+
+        # Di chuyển nút khi kéo
+        def mouseMoveEvent(event):
+            if button._drag_active and event.buttons() == QtCore.Qt.MouseButton.LeftButton:
+                global_mouse_pos = event.globalPosition().toPoint()
+                new_pos = button.parent().mapFromGlobal(
+                    global_mouse_pos - button._drag_start_position)
+
+                # Giới hạn vị trí nút trong vùng cha
+                parent_rect = button.parent().rect()
+                new_pos.setX(
+                    max(0, min(new_pos.x(), parent_rect.width() - button.width())))
+                new_pos.setY(
+                    max(0, min(new_pos.y(), parent_rect.height() - button.height())))
+
+                button.move(new_pos)
+            super(QtWidgets.QPushButton, button).mouseMoveEvent(event)
+
+        # Kết thúc kéo
+        def mouseReleaseEvent(event):
+            if event.button() == QtCore.Qt.MouseButton.LeftButton:
+                button._drag_active = False
+            super(QtWidgets.QPushButton, button).mouseReleaseEvent(event)
+        # Xử lý sự kiện nhấn đúp chuột
+
+        def mouseDoubleClickEvent(event):
+            if event.button() == QtCore.Qt.MouseButton.LeftButton:
+                # print("Nhấn đúp chuột!")
+
+                # Lấy chỉ số hiện tại
+                current_index = self.stackedWidget.currentIndex()
+
+                # Lưu chỉ số trước đó nếu chưa lưu
+                if not hasattr(button, "_previous_index"):
+                    button._previous_index = current_index
+
+                # Chuyển đổi trạng thái
+                if current_index != 2:
+                    # Lưu trạng thái trước khi chuyển
+                    button._previous_index = current_index
+                    self.stackedWidget.setCurrentIndex(2)
+                else:
+                    # Quay lại trạng thái trước đó
+                    self.stackedWidget.setCurrentIndex(button._previous_index)
+
+            # Gọi sự kiện mặc định
+            super(QtWidgets.QPushButton, button).mouseDoubleClickEvent(event)
+
+        # Gán các phương thức vào button
+        button.enterEvent = enterEvent
+        button.leaveEvent = leaveEvent
+        button.mousePressEvent = mousePressEvent
+        button.mouseMoveEvent = mouseMoveEvent
+        button.mouseReleaseEvent = mouseReleaseEvent
+        button.mouseDoubleClickEvent = mouseDoubleClickEvent
+
+        return button
+
+    def plot_humidity_chart_in_widget(self, data_points, hum_1, hum_2):
+        """
+        Vẽ biểu đồ độ ẩm với tooltip thông minh tự động điều chỉnh vị trí
+        """
+        parent_widget = self.humi_chart
+        figure, ax = plt.subplots(figsize=(12, 6))
+
+        # Tách ngày giờ và độ ẩm
+        dates, humidities = zip(*data_points)
+
+        # Vẽ đường độ ẩm chính
+        ax.plot(dates, humidities, color='#0088FF',
+                linestyle='-', linewidth=1, label="Đường độ ẩm")
+
+        # Vẽ các điểm dữ liệu và đường kẻ dọc
+        for date, hum in data_points:
+            color = 'red' if hum > hum_2 or hum < hum_1 else '#00FF00'
+            ax.scatter(date, hum, color=color, s=50)
+            ax.plot([date, date], [0, hum], color='gray',
+                    linestyle='-', linewidth=0.5, alpha=0.3)
+
+        # Vẽ các đường ngưỡng
+        ax.axhline(y=hum_1, color='#35ff00', linestyle='--',
+                   linewidth=1, label=f"Ngưỡng {hum_1}%")
+        ax.axhline(y=hum_2, color='#f600ff', linestyle='-.',
+                   linewidth=1, label=f"Ngưỡng {hum_2}%")
+
+        # Định dạng trục thời gian
+        time_format = mdates.DateFormatter("%H:%M")
+        ax.xaxis.set_major_formatter(time_format)
+        ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+
+        # Thiết lập nhãn trục và tiêu đề
+        ax.set_xlabel("Thời gian", fontsize=10)
+        ax.xaxis.set_label_coords(0.95, -0.05)
+        ax.set_ylabel("Độ ẩm (%)", fontsize=10)
+        ax.yaxis.set_label_coords(-0.03, 0.9)
+        figure.text(0.5, 0.1, "Biểu đồ độ ẩm", fontsize=14,
+                    ha='center', fontweight='bold')
+        ax.legend(loc='best')
+        ax.grid(False)
+
+        # Tối ưu layout
+        plt.tight_layout()
+        figure.autofmt_xdate()
+
+        # Tạo canvas và thêm vào widget
+        canvas = FigureCanvas(figure)
+        layout = parent_widget.layout()
+        if not layout:
+            layout = QtWidgets.QVBoxLayout(parent_widget)
+            parent_widget.setLayout(layout)
+        layout.addWidget(canvas)
+
+        # Tạo annotation cho tooltip với style mới
+        annot = ax.annotate(
+            "",
+            xy=(0, 0),
+            xytext=(0, 0),
+            textcoords="offset points",
+            bbox=dict(
+                boxstyle="round4,pad=0.5",
+                fc="white",
+                ec="gray",
+                alpha=0.9,
+                mutation_scale=0.8
+            ),
+            arrowprops=dict(
+                arrowstyle="-|>",
+                connectionstyle="arc3,rad=0.2",
+                color='gray'
+            )
+        )
+        annot.set_visible(False)
+
+        def get_smart_offset(date, hum, ax_bbox):
+            """
+            Tính toán offset thông minh cho tooltip dựa trên vị trí của điểm và kích thước của đồ thị
+            """
+            x_rel = (mdates.date2num(date) - ax.get_xlim()
+                     [0]) / (ax.get_xlim()[1] - ax.get_xlim()[0])
+            y_rel = (hum - ax.get_ylim()[0]) / \
+                (ax.get_ylim()[1] - ax.get_ylim()[0])
+
+            # Offset mặc định
+            x_offset = 10
+            y_offset = 10
+
+            # Điều chỉnh theo vị trí tương đối
+            if x_rel > 0.8:  # Gần mép phải
+                x_offset = -80
+            elif x_rel < 0.2:  # Gần mép trái
+                x_offset = 20
+
+            if y_rel > 0.8:  # Gần mép trên
+                y_offset = -40
+            elif y_rel < 0.2:  # Gần mép dưới
+                y_offset = 20
+
+            return x_offset, y_offset
+
+        def on_hover(event):
+            if event.inaxes == ax:
+                hit = False
+                for date, hum in data_points:
+                    # Tăng độ nhạy của vùng hover
+                    if abs(event.xdata - mdates.date2num(date)) <= 0.001 and abs(event.ydata - hum) <= 1:
+                        hit = True
+                        # Lấy offset thông minh
+                        x_offset, y_offset = get_smart_offset(
+                            date, hum, ax.bbox)
+
+                        # Cập nhật vị trí và thuộc tính của tooltip
+                        annot.xy = (mdates.date2num(date), hum)
+                        annot.set_position((x_offset, y_offset))
+
+                        tooltip_text = (
+                            f"Ngày: {date.strftime('%d/%m/%Y')}\n"
+                            f"Thời gian: {date.strftime('%H:%M')}\n"
+                            f"Độ ẩm: {hum}%"
+                        )
+                        if hum > hum_2:
+                            tooltip_text += "\n⚠️ Độ ẩm cao"
+                        elif hum < hum_1:
+                            tooltip_text += "\n⚠️ Độ ẩm thấp"
+
+                        annot.set_text(tooltip_text)
+
+                        # Đổi màu tooltip theo trạng thái độ ẩm
+                        if hum > hum_2 or hum < hum_1:
+                            annot.get_bbox_patch().set(fc="#F01F1F")
+                        else:
+                            annot.get_bbox_patch().set(fc="#00FF00")
+
+                        annot.set_visible(True)
+                        canvas.draw_idle()
+                        break
+
+                if not hit and annot.get_visible():
+                    annot.set_visible(False)
+                    canvas.draw_idle()
+
+        canvas.mpl_connect("motion_notify_event", on_hover)
+        canvas.setSizePolicy(QSizePolicy.Policy.Expanding,
+                             QSizePolicy.Policy.Expanding)
+
+    def plot_voltage_chart_in_widget(self, data_points, data_points_2, dc_1, dc_2, dc_3):
+        """
+        Vẽ biểu đồ điện áp DC với tooltip thông minh tự động điều chỉnh vị trí và 3 ngưỡng so sánh.
+        """
+        parent_widget = self.dc_chart  # Widget nơi biểu đồ sẽ hiển thị
+        figure, (ax1, ax2) = plt.subplots(
+            2, 1, figsize=(12, 12))  # Tạo 2 subplot
+
+        def plot_voltage(ax, data, label, line_color):
+            """Hàm vẽ biểu đồ điện áp"""
+            dates, voltages = zip(*data)
+            ax.plot(dates, voltages, color=line_color,
+                    linestyle='-', linewidth=1, label=label)
+
+            # Vẽ các điểm dữ liệu và đường kẻ dọc
+            for date, voltage in data:
+                color = get_color_based_on_voltage(voltage, dc_1, dc_2, dc_3)
+                ax.scatter(date, voltage, color=color, s=50)
+                ax.plot([date, date], [0, voltage], color='gray',
+                        linestyle='-', linewidth=0.5, alpha=0.3)
+
+            # Vẽ các đường ngưỡng
+            ax.axhline(y=dc_1, color='#00FF00', linestyle='-.',
+                       linewidth=1, label=f"Ngưỡng {dc_1}V")
+            ax.axhline(y=dc_2, color='#FFA500', linestyle=':',
+                       linewidth=1, label=f"Ngưỡng {dc_2}V")
+            ax.axhline(y=dc_3, color='#FF0000', linestyle='--',
+                       linewidth=1, label=f"Ngưỡng {dc_3}V")
+
+            # Thiết lập nhãn trục và tiêu đề
+            ax.set_ylabel("Điện áp (V)", fontsize=10)
+            ax.yaxis.set_label_coords(-0.03, 0.85)
+            ax.set_xlabel("Thời gian", fontsize=10)
+            # # Di chuyển nhãn ra ngoài (phía bên phải)
+            ax.xaxis.set_label_coords(0.95, -0.1)
+            ax.legend(loc='best')
+            ax.grid(False)
+
+        def get_color_based_on_voltage(voltage, dc_1, dc_2, dc_3):
+            if voltage > dc_3:
+                return "#F01F1F"  # Màu đỏ
+            elif voltage > dc_2:
+                return "#FFA500"  # Màu cam
+            elif voltage > dc_1:
+                return "#00FF00"  # Màu xanh lá
+            else:
+                return "#F01F1F"  # Màu đỏ
+
+        # Vẽ biểu đồ đầu tiên (DC1)
+        plot_voltage(ax1, data_points, "Điện áp DC1", "#0088FF")
+        # Định dạng trục x cho ax1
+        ax1.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
+        ax1.xaxis.set_major_locator(mdates.AutoDateLocator())
+        ax1.tick_params(axis="x")
+        # Đặt tiêu đề cho từng subplot
+
+        # ax1.set_xlabel("Thời gian", fontsize=12, labelpad=10)
+        # # Di chuyển nhãn ra ngoài (phía bên phải)
+        # ax1.xaxis.set_label_coords(1.05, -0.05)
+
+        # Vẽ biểu đồ thứ hai (DC2)
+        plot_voltage(ax2, data_points_2, "Điện áp DC2", "#FF6347")
+        # Định dạng trục x cho ax2
+        ax2.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
+        ax2.xaxis.set_major_locator(mdates.AutoDateLocator())
+        ax2.tick_params(axis="x")
+        # ax2.set_xlabel("Thời gian", fontsize=12, labelpad=10)
+        # # Di chuyển nhãn ra ngoài (phía bên phải)
+        # ax2.xaxis.set_label_coords(1.05, -0.05)
+
+        # Đặt tiêu đề dưới các biểu đồ
+        figure.text(0.5, 0.52, "Điện áp DC1", fontsize=14,
+                    ha='center', fontweight='bold')
+        figure.text(0.5, 0.02, "Điện áp DC2", fontsize=14,
+                    ha='center', fontweight='bold')
+        # Tối ưu layout cho cả 2 biểu đồ
+        plt.tight_layout()
+        # Điều chỉnh khoảng cách giữa các biểu đồ
+        plt.subplots_adjust(hspace=0.25, bottom=0.1)
+
+        # Tạo canvas và thêm vào widget
+        canvas = FigureCanvas(figure)
+        layout = parent_widget.layout()
+        if not layout:
+            layout = QtWidgets.QVBoxLayout(parent_widget)
+            parent_widget.setLayout(layout)
+        layout.addWidget(canvas)
+
+        # Tạo annotation cho tooltip của biểu đồ 1
+        annot1 = ax1.annotate(
+            "",
+            xy=(0, 0),
+            xytext=(0, 0),
+            textcoords="offset points",
+            bbox=dict(boxstyle="round4,pad=0.5",
+                      fc="white", ec="gray", alpha=0.9),
+            arrowprops=dict(arrowstyle="->",
+                            connectionstyle="arc3,rad=0.2", color='gray')
+        )
+        annot1.set_visible(False)
+
+        # Tạo annotation cho tooltip của biểu đồ 2
+        annot2 = ax2.annotate(
+            "",
+            xy=(0, 0),
+            xytext=(0, 0),
+            textcoords="offset points",
+            bbox=dict(boxstyle="round4,pad=0.5",
+                      fc="white", ec="gray", alpha=0.9),
+            arrowprops=dict(arrowstyle="->",
+                            connectionstyle="arc3,rad=0.2", color='gray')
+        )
+        annot2.set_visible(False)
+
+        def get_smart_offset(date, voltage, ax_bbox):
+            """Tính toán offset thông minh cho tooltip"""
+            x_rel = (mdates.date2num(date) - ax1.get_xlim()
+                     [0]) / (ax1.get_xlim()[1] - ax1.get_xlim()[0])
+            y_rel = (voltage - ax1.get_ylim()[0]) / \
+                (ax1.get_ylim()[1] - ax1.get_ylim()[0])
+
+            x_offset = -100 if x_rel > 0.8 else 20 if x_rel < 0.2 else 10
+            y_offset = -40 if y_rel > 0.8 else 20 if y_rel < 0.2 else 10
+
+            return x_offset, y_offset
+
+        def on_hover(event):
+            """Xử lý sự kiện hover để hiển thị tooltip trên cả hai biểu đồ"""
+            hit = False
+
+            # Kiểm tra biểu đồ thứ nhất (ax1)
+            if event.inaxes == ax1:
+                for date, voltage in data_points:
+                    if abs(event.xdata - mdates.date2num(date)) <= 0.001 and abs(event.ydata - voltage) <= 1:
+                        hit = True
+                        x_offset, y_offset = get_smart_offset(
+                            date, voltage, ax1.bbox)
+                        annot1.xy = (mdates.date2num(date), voltage)
+                        annot1.set_position((x_offset, y_offset))
+                        tooltip_text = (
+                            f"Ngày: {date.strftime('%d/%m/%Y')}\n"
+                            f"Thời gian: {date.strftime('%H:%M')}\n"
+                            f"Điện áp: {voltage}V"
+                        )
+                        tooltip_text += (
+                            "\n⚠️ Quá điện áp" if voltage > dc_3 else
+                            "\n⚠️ Điện áp cao (Ngưỡng trung)" if voltage > dc_2 else
+                            "\nĐiện áp vừa phải" if voltage > dc_1 else
+                            "\n⚠️ Điện áp thấp"
+                        )
+                        annot1.set_text(tooltip_text)
+                        annot1.get_bbox_patch().set(fc=get_color_based_on_voltage(voltage, dc_1, dc_2, dc_3))
+                        annot1.set_visible(True)
+                        canvas.draw_idle()
+                        break
+                if not hit and annot1.get_visible():
+                    annot1.set_visible(False)
+                    canvas.draw_idle()
+
+            # Kiểm tra biểu đồ thứ hai (ax2)
+            elif event.inaxes == ax2:
+                for date, voltage in data_points_2:
+                    if abs(event.xdata - mdates.date2num(date)) <= 0.001 and abs(event.ydata - voltage) <= 1:
+                        hit = True
+                        x_offset, y_offset = get_smart_offset(
+                            date, voltage, ax2.bbox)
+                        annot2.xy = (mdates.date2num(date), voltage)
+                        annot2.set_position((x_offset, y_offset))
+                        tooltip_text = (
+                            f"Ngày: {date.strftime('%d/%m/%Y')}\n"
+                            f"Thời gian: {date.strftime('%H:%M')}\n"
+                            f"Điện áp: {voltage}V"
+                        )
+                        tooltip_text += (
+                            "\n⚠️ Quá điện áp" if voltage > dc_3 else
+                            "\n⚠️ Điện áp cao (Ngưỡng trung)" if voltage > dc_2 else
+                            "\nĐiện áp vừa phải" if voltage > dc_1 else
+                            "\n⚠️ Điện áp thấp"
+                        )
+                        annot2.set_text(tooltip_text)
+                        annot2.get_bbox_patch().set(fc=get_color_based_on_voltage(voltage, dc_1, dc_2, dc_3))
+                        annot2.set_visible(True)
+                        canvas.draw_idle()
+                        break
+                if not hit and annot2.get_visible():
+                    annot2.set_visible(False)
+                    canvas.draw_idle()
+
+        canvas.mpl_connect("motion_notify_event", on_hover)
+        canvas.setSizePolicy(QSizePolicy.Policy.Expanding,
+                             QSizePolicy.Policy.Expanding)

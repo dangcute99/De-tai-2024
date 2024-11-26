@@ -319,25 +319,7 @@
       "weight": "bold"
     }
   },
-  "bieudo_nhietdo": {
-    "color":"black",
-
-    "font": {
-      "family": "Arial",
-      "size": 18,
-      "weight": "bold"
-    }
-  },
-  "bieudo_doam": {
-    "color":"black",
-
-    "font": {
-      "family": "Arial",
-      "size": 18,
-      "weight": "bold"
-    }
-  },
-  "bieudo_dienap": {
+  "time_label": {
     "color":"black",
 
     "font": {
@@ -347,15 +329,6 @@
     }
   },
   "bieudo_suco": {
-    "color":"black",
-
-    "font": {
-      "family": "Arial",
-      "size": 18,
-      "weight": "bold"
-    }
-  },
-  "HDSD": {
     "color":"black",
 
     "font": {
@@ -378,5 +351,13 @@
     "background-color": "rgba(255,252,0,1)",
     "border-radius": "15px",
     "padding": "5px"
+  },
+  "HDSD": {
+    "color":"black",
+    "font": {
+      "family": "Arial",
+      "size": 18,
+      "weight": "bold"
+    }
   }
 }
