@@ -230,12 +230,12 @@ class Controller():
     def temp_button(self):
         self.my_view.main.hienthi.setCurrentIndex(1)
         self.my_view.main.ve_bieu_do_nhiet_do(
-            self.data_points, self.temp_1, self.temp_2)
+            self.data_points, self.data_points_2, self.temp_1, self.temp_2)
 
     def humi_button(self):
         self.my_view.main.hienthi.setCurrentIndex(2)
         self.my_view.main.ve_bieu_do_do_am(
-            self.data_points, self.humi_1, self.humi_2)
+            self.data_points_2, self.data_points, self.humi_1, self.humi_2)
 
     def dc_button(self):
         self.my_view.main.hienthi.setCurrentIndex(3)
