@@ -22,12 +22,13 @@ class DatabaseConnection:
             if self.connection.is_connected():
                 status = "Connected to MySQL server"
                 return True
+            else:
+                return False
                 # print(status)
         except Error as e:
             status = f"Error: {e}"
             # print(status)
             self.connection = None
-        return False
 
     def create_database(self, database_name):
         """Tạo cơ sở dữ liệu nếu chưa tồn tại."""

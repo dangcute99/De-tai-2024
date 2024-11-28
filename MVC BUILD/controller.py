@@ -72,7 +72,9 @@ class Controller():
         login_data = self.my_view.ui.return_login_in4()
         in_4 = self.load_sql_login_in4()
         self.my_model = Model(in_4)
-        if (self.my_model.check_connection()):
+        if not (self.my_model.check_connection()):
+            self.my_view.ui.return_sql_status(False)
+        else:
             if self.my_model.return_user_exists(login_data):
                 print("Đăng nhập thành công")
                 if self.sql_login_window and self.sql_login_window.isVisible():
@@ -82,8 +84,6 @@ class Controller():
 
             else:
                 self.my_view.ui.return_login_status(False)
-        else:
-            self.my_view.ui.return_sql_status(False)
 
         # return login_data
         # self.my_view.ui.return_login_status(True)

@@ -61,8 +61,7 @@ class Model:
         self.db = DatabaseConnection(**db_config)
         if self.check_connection():
             self.create_table_in4_if_not_exists()
-        else:
-            print("Không thể kết nối đến MySQL Server")
+            print("Đã tạo tt cơ bản")
 
     def check_connection(self):
         return self.db.check_connection()
@@ -70,7 +69,7 @@ class Model:
     def create_table_in4_if_not_exists(self):
         self.db.create_database('data')
         self.db.execute_query(create_table_login_in4_query, 'data')
-        users_data = {'username': 'admin', 'password': '123456'}
+        users_data = {'username': 'admin', 'passwords': '123456'}
         if not (self.user_exists('login_in4', users_data)):
             self.insert_multiple_values('data', 'login_in4', users_data)
 
