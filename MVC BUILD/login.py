@@ -1,7 +1,19 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt
-import json
+import sys
+import os
+
+
+def resource_path(relative_path):
+    """ Get the absolute path to the resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 
 class Ui_API(object):
@@ -78,8 +90,8 @@ class Ui_API(object):
         self.anh_bc = QtWidgets.QLabel(parent=self.centralwidget)
         self.anh_bc.setGeometry(QtCore.QRect(5, 5, 190, 190))
         self.anh_bc.setText("")
-        self.anh_bc.setPixmap(QtGui.QPixmap(
-            "C:\\Users\\ASUS\\OneDrive\\My Computer\\ui\\MVC BUILD\\picture\\anh1.png"))
+        anh_path = resource_path("MVC BUILD/picture/anh1.png")
+        self.anh_bc.setPixmap(QtGui.QPixmap(anh_path))
         self.anh_bc.setScaledContents(True)
         self.anh_bc.setObjectName("anh_bc")
         self.gridLayoutWidget = QtWidgets.QWidget(

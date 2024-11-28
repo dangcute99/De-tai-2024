@@ -1,16 +1,25 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtGui import QFontDatabase
 from PyQt6.QtCore import Qt, QPoint
-import json
+
 import os
+import sys
+
+
+def resource_path(relative_path):
+    """ Get the absolute path to the resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 
 def load_custom_font():
     try:
-        font_path = os.path.abspath(
-            "C:\\Users\\ASUS\\OneDrive\\My Computer\\ui\\MVC BUILD\\font\\dripicons-v2.ttf")
-        print(f"Đường dẫn font: {font_path}")
-        print(f"File tồn tại: {os.path.exists(font_path)}")
+        font_path = resource_path("MVC BUILD/font/dripicons-v2.ttf")
 
         font_id = QFontDatabase.addApplicationFont(font_path)
         if font_id == -1:

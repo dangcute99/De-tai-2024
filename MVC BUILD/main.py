@@ -1,6 +1,7 @@
 from PyQt6.QtCore import QSize
 from PyQt6 import QtCore
 import sys
+import os
 import json
 from PyQt6 import QtWidgets, uic, QtGui
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -10,16 +11,27 @@ import matplotlib.dates as mdates
 from PyQt6.QtCore import QTimer, QDateTime
 
 
+def resource_path(relative_path):
+    """ Get the absolute path to the resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         # Nạp giao diện từ file .ui đã tạo trong Qt Designer
-        uic.loadUi(
-            r"C:\Users\ASUS\OneDrive\My Computer\ui\ui designer\main.ui", self)
+        ui_path = resource_path("ui designer/main.ui")
+        uic.loadUi(ui_path, self)
 
         # Gọi hàm load style từ JSON
-        self.load_json_style(
-            r"C:\Users\ASUS\OneDrive\My Computer\ui\MVC BUILD\style.json")
+        json_path = resource_path("MVC BUILD/style.json")
+        self.load_json_style(json_path)
         self.stackedWidget.setCurrentWidget(self.page_1)
 
         self.temp_chart_bit = False
