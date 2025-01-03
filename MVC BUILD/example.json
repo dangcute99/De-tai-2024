@@ -1,0 +1,328 @@
+{
+    "lineEdit": {
+        "font": {
+            "family": "Segoe UI",
+            "size": 10
+        },
+        "style": {
+            "QLineEdit": {
+                "padding": "5px",
+                "border": "1px solid #ccc",
+                "border-radius": "5px",
+                "background-color": "white",
+                "color": "#333333",
+                "hover": {
+                    "border": "1px solid #0078D7"
+                },
+                "focus": {
+                    "border": "2px solid #0078D7",
+                    "background-color": "#F8F8F8"
+                }
+            }
+        }
+    },
+
+    "comboBox": {
+        "style": {
+            "QComboBox": {
+                "padding": "5px",
+                "border": "1px solid #ccc",
+                "border-radius": "5px",
+                "background-color": "white",
+                "color": "#333333",
+                "min-width": "100px",
+                "hover": {
+                    "border": "1px solid #0078D7"
+                },
+                "down-arrow": {
+                    "image": "url(down_arrow.png)",
+                    "width": "12px",
+                    "height": "12px"
+                },
+                "drop-down": {
+                    "border": "none",
+                    "width": "20px"
+                }
+            }
+        }
+    },
+
+    "textEdit": {
+        "font": {
+            "family": "Consolas",
+            "size": 11
+        },
+        "style": {
+            "QTextEdit": {
+                "padding": "10px",
+                "border": "1px solid #ccc",
+                "border-radius": "5px",
+                "background-color": "white",
+                "color": "#333333",
+                "selection-background-color": "#0078D7",
+                "selection-color": "white"
+            }
+        }
+    },
+
+    "progressBar": {
+        "style": {
+            "QProgressBar": {
+                "border": "1px solid #ccc",
+                "border-radius": "3px",
+                "background-color": "#F0F0F0",
+                "text-align": "center",
+                "color": "black",
+                "chunk": {
+                    "background-color": "#0078D7",
+                    "width": "10px"
+                }
+            }
+        }
+    },
+
+    "slider": {
+        "style": {
+            "QSlider": {
+                "groove": {
+                    "border": "1px solid #999999",
+                    "height": "8px",
+                    "background": "#cccccc",
+                    "margin": "2px 0"
+                },
+                "handle": {
+                    "background": "#ffffff",
+                    "border": "1px solid #5c5c5c",
+                    "width": "18px",
+                    "margin": "-2px 0",
+                    "border-radius": "9px"
+                }
+            }
+        }
+    },
+
+    "radioButton": {
+        "style": {
+            "QRadioButton": {
+                "color": "#333333",
+                "spacing": "5px",
+                "indicator": {
+                    "width": "13px",
+                    "height": "13px",
+                    "border": "2px solid #999999",
+                    "border-radius": "7px",
+                    "background-color": "white"
+                },
+                "checked": {
+                    "indicator": {
+                        "background-color": "#0078D7",
+                        "border": "2px solid #0078D7"
+                    }
+                }
+            }
+        }
+    },
+
+    "groupBox": {
+        "style": {
+            "QGroupBox": {
+                "border": "1px solid #cccccc",
+                "border-radius": "5px",
+                "margin-top": "20px",
+                "font-weight": "bold",
+                "color": "#333333",
+                "title": {
+                    "subcontrol-origin": "margin",
+                    "subcontrol-position": "top center",
+                    "padding": "0 3px",
+                    "background-color": "white"
+                }
+            }
+        }
+    },
+
+    "tabWidget": {
+        "style": {
+            "QTabWidget": {
+                "pane": {
+                    "border": "1px solid #cccccc",
+                    "top": "1px",
+                    "background": "white"
+                },
+                "tab-bar": {
+                    "alignment": "left"
+                }
+            },
+            "QTabBar::tab": {
+                "background": "#f0f0f0",
+                "border": "1px solid #cccccc",
+                "padding": "5px 10px",
+                "margin-right": "2px",
+                "selected": {
+                    "background": "white",
+                    "border-bottom-color": "white"
+                },
+                "hover": {
+                    "background": "#e6e6e6"
+                }
+            }
+        }
+    },
+
+    "listWidget": {
+        "style": {
+            "QListWidget": {
+                "border": "1px solid #cccccc",
+                "background": "white",
+                "alternate-background-color": "#f9f9f9",
+                "item": {
+                    "padding": "5px",
+                    "selected": {
+                        "background": "#0078D7",
+                        "color": "white"
+                    },
+                    "hover": {
+                        "background": "#e5f3ff"
+                    }
+                }
+            }
+        }
+    },
+
+    "treeWidget": {
+        "style": {
+            "QTreeWidget": {
+                "border": "1px solid #cccccc",
+                "background": "white",
+                "alternate-background-color": "#f9f9f9",
+                "item": {
+                    "padding": "5px",
+                    "selected": {
+                        "background": "#0078D7",
+                        "color": "white"
+                    },
+                    "hover": {
+                        "background": "#e5f3ff"
+                    }
+                },
+                "branch": {
+                    "image": "url(branch.png)"
+                }
+            }
+        }
+    },
+
+    "tableWidget": {
+        "style": {
+            "QTableWidget": {
+                "border": "1px solid #cccccc",
+                "background": "white",
+                "gridline-color": "#e0e0e0",
+                "header": {
+                    "background": "#f0f0f0",
+                    "padding": "5px",
+                    "border": "none",
+                    "hover": {
+                        "background": "#e0e0e0"
+                    }
+                },
+                "item": {
+                    "padding": "5px",
+                    "selected": {
+                        "background": "#0078D7",
+                        "color": "white"
+                    }
+                }
+            }
+        }
+    },
+
+    "scrollBar": {
+        "style": {
+            "QScrollBar": {
+                "background": "#f0f0f0",
+                "width": "12px",
+                "height": "12px",
+                "handle": {
+                    "background": "#c1c1c1",
+                    "min-height": "20px",
+                    "min-width": "20px",
+                    "border-radius": "6px",
+                    "hover": {
+                        "background": "#a8a8a8"
+                    }
+                },
+                "add-line": {
+                    "border": "none",
+                    "background": "none"
+                },
+                "sub-line": {
+                    "border": "none",
+                    "background": "none"
+                }
+            }
+        }
+    },
+
+    "menuBar": {
+        "style": {
+            "QMenuBar": {
+                "background-color": "#f8f8f8",
+                "border-bottom": "1px solid #cccccc",
+                "item": {
+                    "padding": "5px 10px",
+                    "spacing": "3px",
+                    "selected": {
+                        "background": "#0078D7",
+                        "color": "white"
+                    }
+                }
+            }
+        }
+    },
+
+    "toolButton": {
+        "style": {
+            "QToolButton": {
+                "border": "1px solid #cccccc",
+                "border-radius": "3px",
+                "padding": "3px",
+                "background-color": "#f8f8f8",
+                "hover": {
+                    "background-color": "#e8e8e8",
+                    "border": "1px solid #999999"
+                },
+                "pressed": {
+                    "background-color": "#d8d8d8"
+                },
+                "checked": {
+                    "background-color": "#0078D7",
+                    "color": "white",
+                    "border": "1px solid #0078D7"
+                }
+            }
+        }
+    },
+
+    "dockWidget": {
+        "style": {
+            "QDockWidget": {
+                "titlebar-close-button": {
+                    "background": "none",
+                    "border": "none",
+                    "image": "url(close.png)"
+                },
+                "titlebar-normal-button": {
+                    "background": "none",
+                    "border": "none",
+                    "image": "url(undock.png)"
+                },
+                "title": {
+                    "padding": "5px",
+                    "background": "#f0f0f0",
+                    "color": "#333333"
+                }
+            }
+        }
+    }
+}

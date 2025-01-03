@@ -1,110 +1,573 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QToolTip
-from PyQt6.QtGui import QFont
-from PyQt6.QtCore import Qt, QPoint, QEvent
+{
+    "temp_button": {
+        "maximum-size": {
+            "width": 200,
+            "height": 27
+        },
+        "minimum-size": {
+            "width": 100,
+            "height": 27
+        },
+        "font": {
+            "family": "Arial",
+            "size": 14
+        },
+        "color": "black",
+        "background-color": "white",
+        "border-width": "1px",
+        "border-style": "solid",
+        "border-color": "black",
+        "border-radius": "10px"
+    },
+    "humi_button": {
+        "maximum-size": {
+            "width": 200,
+            "height": 27
+        },
+        "minimum-size": {
+            "width": 100,
+            "height": 27
+        },
+        "font": {
+            "family": "Arial",
+            "size": 14
+        },
+        "color": "black",
+        "background-color": "white",
+        "border-width": "1px",
+        "border-style": "solid",
+        "border-color": "black",
+        "border-radius": "10px"
+    },
+    "dc_button": {
+        "maximum-size": {
+            "width": 200,
+            "height": 27
+        },
+        "minimum-size": {
+            "width": 100,
+            "height": 27
+        },
+        "font": {
+            "family": "Arial",
+            "size": 14
+        },
+        "color": "black",
+        "background-color": "white",
+        "border-width": "1px",
+        "border-style": "solid",
+        "border-color": "black",
+        "border-radius": "10px"
+    },
+    "error_button": {
+        "maximum-size": {
+            "width": 200,
+            "height": 27
+        },
+        "minimum-size": {
+            "width": 100,
+            "height": 27
+        },
+        "font": {
+            "family": "Arial",
+            "size": 14
+        },
+        "color": "black",
+        "background-color": "white",
+        "border-width": "1px",
+        "border-style": "solid",
+        "border-color": "black",
+        "border-radius": "10px"
+    },
+    "setting_button": {
+        "color": "white",
+        "border-radius": "10px"
 
-
-def create_draggable_button(parent=None):
-    # Tạo đối tượng nút bấm kéo
-    button = QPushButton("Drag me", parent)
-
-    # Cấu hình font tooltip toàn cục
-    QToolTip.setFont(QFont('Arial', 10))
-
-    # Cấu hình nút
-    button.setFixedSize(100, 100)
-    button.setStyleSheet("""
-        QPushButton {
-            background-color: lightblue;
-            border: 2px solid black;
-            border-radius: 50px;
-            color: black;
+    },
+    "label": {
+        "color": "red",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
         }
-        QPushButton:hover {
-            background-color: skyblue;
+    }, "label_2": {
+        "color": "red",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
         }
-    """)
+    }, "tram_1": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_2": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_3": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_4": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_5": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_6": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_7": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_8": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_9": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_10": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_11": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_12": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_13": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_14": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_15": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    }, "tram_16": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 25,
+            "weight": "bold"
+        }
+    },
+    "ten_tram": {
+        "color": "black",
+        "font": {
+            "family": "Times New Roman",
+            "size": 25,
+            "weight": "bold"
+        }
+    },
+    "chung_tram": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 15,
+            "weight": "bold"
+        },
+        "border-radius": "10px"
+    },
 
-    # Bật theo dõi chuột
-    button.setMouseTracking(True)
+    "temp_value": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 20,
+            "weight": "bold"
+        }
+    },
+    "humi_value": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 20,
+            "weight": "bold"
+        }
+    },
+    "dc1_value": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 20,
+            "weight": "bold"
+        }
+    },
+    "dc2_value": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 20,
+            "weight": "bold"
+        }
+    },
+    "ac1_value": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 20,
+            "weight": "bold"
+        }
+    },
+    "ac2_value": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 20,
+            "weight": "bold"
+        }
+    },
+    "tot": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 18,
+            "weight": "bold"
+        }
+    },
+    "muc_1": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 18,
+            "weight": "bold"
+        }
+    },
+    "muc_2": {
+        "color": "black",
 
-    # Thuộc tính kéo
-    button._drag_active = False
-    button._drag_start_position = None
+        "font": {
+            "family": "Arial",
+            "size": 18,
+            "weight": "bold"
+        }
+    },
+    "time_label": {
+        "color": "black",
 
-    # Xử lý sự kiện tooltip khi chuột vào nút
-    def event(event):
-        if event.type() == QEvent.Type.ToolTip:
-            QToolTip.showText(
-                button.mapToGlobal(event.pos()),
-                "HDSD: Kéo nút hoặc nhấn đúp chuột!"
-            )
-            return True
-        return super(QPushButton, button).event(event)
+        "font": {
+            "family": "Arial",
+            "size": 18,
+            "weight": "bold"
+        }
+    },
+    "bieudo_suco": {
+        "color": "black",
 
-    # Hiển thị tooltip khi chuột vào nút
-    def enterEvent(event):
-        QToolTip.showText(
-            button.mapToGlobal(QPoint(0, 0)),
-            "HDSD: Kéo nút hoặc nhấn đúp chuột!"
-        )
-        # print("Chuột đã vào nút")
-        super(QPushButton, button).enterEvent(event)
+        "font": {
+            "family": "Arial",
+            "size": 18,
+            "weight": "bold"
+        }
+    },
+    "tt_tram_1": {
+        "background-color": "rgba(0,255,25,1)",
+        "border-radius": "15px",
+        "padding": "5px"
+    },
+    "tt_tram_2": {
+        "background-color": "rgba(255,0,0,1)",
+        "border-radius": "15px",
+        "padding": "5px"
+    },
+    "tt_tram_3": {
+        "background-color": "rgba(255,252,0,1)",
+        "border-radius": "15px",
+        "padding": "5px"
+    },
+    "HDSD": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 18,
+            "weight": "bold"
+        }
+    },
+    "label_8": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 18,
+            "weight": "bold"
+        }
+    },
+    "label_59": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12,
+            "weight": "bold"
+        }
+    },
+    "label_60": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12,
+            "weight": "bold"
+        }
+    },
+    "label_9": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12,
+            "weight": "bold"
+        }
+    },
+    "label_10": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12,
+            "weight": "bold"
+        }
+    },
+    "label_15": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12,
+            "weight": "bold"
+        }
+    },
+    "label_16": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "label_17": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "label_18": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "label_19": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "label_20": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "label_21": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "label_22": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "label_65": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12,
+            "weight": "bold"
+        }
+    },
+    "label_66": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12,
+            "weight": "bold"
+        }
+    },
+    "label_67": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "pushButton": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "pushButton_3": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "radioButton": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "radioButton_3": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "doubleSpinBox": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 10
+        }
 
-    # Bắt đầu kéo
-    def mousePressEvent(event):
-        if event.button() == Qt.MouseButton.LeftButton:
-            button._drag_active = True
-            # Lưu vị trí bắt đầu kéo
-            button._drag_start_position = event.globalPosition().toPoint() - button.pos()
-            # print("Bắt đầu kéo")
-        super(QPushButton, button).mousePressEvent(event)
+    },
+    "doubleSpinBox_2": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 10
+        }
+    },
+    "doubleSpinBox_3": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 10
+        }
+    },
+    "doubleSpinBox_4": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "doubleSpinBox_5": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "doubleSpinBox_6": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "doubleSpinBox_7": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "doubleSpinBox_8": {
+        "color": "black",
+        "font": {
+            "family": "Arial",
+            "size": 12
+        }
+    },
+    "checkBox": {
+        "stylesheet": {
+            "QCheckBox": {
+                "color": "rgb(0,0,0)",
+                "indicator": {
+                    "width": "12px",
+                    "height": "12px",
+                    "border-radius": "5px",
+                    "unchecked": {
+                        "background-color": "white",
+                        "border": "1px solid black"
+                    },
+                    "checked": {
+                        "background-color": "blue",
+                        "border": "1px solid black"
+                    }
+                }
+            }
+        }
+    }
 
-    # Di chuyển nút khi kéo
-    def mouseMoveEvent(event):
-        if button._drag_active and event.buttons() == Qt.MouseButton.LeftButton:
-            # Di chuyển nút
-            new_pos = event.globalPosition().toPoint() - button._drag_start_position
-            button.move(new_pos)
-            # print(f"Đang kéo đến vị trí: {new_pos}")
-        super(QPushButton, button).mouseMoveEvent(event)
 
-    # Kết thúc kéo
-    def mouseReleaseEvent(event):
-        if event.button() == Qt.MouseButton.LeftButton:
-            button._drag_active = False
-            # print("Kết thúc kéo")
-        super(QPushButton, button).mouseReleaseEvent(event)
-
-    # Nhấn đúp chuột
-    def mouseDoubleClickEvent(event):
-        if event.button() == Qt.MouseButton.LeftButton:
-            print("Nhấn đúp!")
-        super(QPushButton, button).mouseDoubleClickEvent(event)
-
-    # Gán các phương thức vào button
-    button.event = event
-    button.enterEvent = enterEvent
-    button.mousePressEvent = mousePressEvent
-    button.mouseMoveEvent = mouseMoveEvent
-    button.mouseReleaseEvent = mouseReleaseEvent
-    button.mouseDoubleClickEvent = mouseDoubleClickEvent
-
-    return button
-
-
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Draggable Button Test")
-        self.setGeometry(100, 100, 600, 400)
-
-        # Gọi hàm tạo nút kéo
-        self.button = create_draggable_button(self)
-        self.button.move(250, 150)  # Đặt vị trí ban đầu của nút
-
-
-if __name__ == "__main__":
-    app = QApplication([])
-    window = MainWindow()
-    window.show()
-    app.exec()
+}

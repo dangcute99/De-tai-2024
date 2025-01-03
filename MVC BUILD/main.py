@@ -33,6 +33,7 @@ class MainWindow(QtWidgets.QMainWindow):
         json_path = resource_path("MVC BUILD/style.json")
         self.load_json_style(json_path)
         self.stackedWidget.setCurrentWidget(self.page_1)
+        self.setting_ui()
 
         self.temp_chart_bit = False
         self.humi_chart_bit = False
@@ -49,6 +50,56 @@ class MainWindow(QtWidgets.QMainWindow):
         # Hiển thị thời gian ngay khi khởi động
         self.update_time()
 
+    def setting_ui(self):
+        self.doubleSpinBox.setDecimals(1)
+        self.doubleSpinBox.setSingleStep(0.5)
+        self.doubleSpinBox.setSuffix(" %")
+        ################################################################
+        self.doubleSpinBox_7.setDecimals(1)
+        self.doubleSpinBox_7.setSingleStep(0.5)
+        self.doubleSpinBox_7.setSuffix(" %")
+        ################################################################
+        self.doubleSpinBox_2.setDecimals(1)
+        self.doubleSpinBox_2.setSingleStep(0.5)
+        self.doubleSpinBox_2.setSuffix(" %")
+        ################################################################
+        self.doubleSpinBox_6.setDecimals(1)
+        self.doubleSpinBox_6.setSingleStep(0.5)
+        self.doubleSpinBox_6.setSuffix(" %")
+        ################################################################
+        ################################################################
+        self.doubleSpinBox_3.setDecimals(1)
+        self.doubleSpinBox_3.setSingleStep(0.5)
+        self.doubleSpinBox_3.setSuffix(" V")
+        ################################################################
+        self.doubleSpinBox_4.setDecimals(1)
+        self.doubleSpinBox_4.setSingleStep(0.5)
+        self.doubleSpinBox_4.setSuffix(" V")
+        ################################################################
+        self.doubleSpinBox_5.setDecimals(1)
+        self.doubleSpinBox_5.setSingleStep(0.5)
+        self.doubleSpinBox_5.setSuffix(" V")
+        ################################################################
+        self.doubleSpinBox_8.setDecimals(0)
+        self.doubleSpinBox_8.setSuffix("°C")
+        ################################################################
+        # self.checkBox.setStyleSheet("  QCheckBox {\n"
+        #                             "        color: rgb(0,0,0);  \n"
+        #                             "    }\n"
+        #                             "    QCheckBox::indicator {\n"
+        #                             "        width: 12px;\n"
+        #                             "        height: 12px;\n"
+        #                             "        border-radius:6px;\n"
+        #                             "    }\n"
+        #                             "    QCheckBox::indicator:unchecked {\n"
+        #                             "        background-color: white;  \n"
+        #                             "        border: 1px solid black;\n"
+        #                             "    }\n"
+        #                             "    QCheckBox::indicator:checked {\n"
+        #                             "        background-color: blue;\n"
+        #                             "        border: 1px solid black;\n"
+        #                             "    }")
+
     def set_tentram(self, tentram):
         # Thiết lập tên cho các trạm
         for i in range(1, 17):  # Dùng 1 đến 16 vì có 16 trạm
@@ -60,50 +111,162 @@ class MainWindow(QtWidgets.QMainWindow):
                 tram.setStyleSheet(
                     "color: black;font:bold; background: transparent; border: none;")
 
+    # def load_json_style(self, json_file):
+    #     try:
+    #         with open(json_file, "r") as file:
+    #             styles = json.load(file)
+
+    #         for widget_name, style_props in styles.items():
+    #             widget = self.findChild(QtWidgets.QWidget, widget_name)
+    #             if widget:
+    #                 style_sheet = ""
+    #                 font = QtGui.QFont()  # Tạo một QFont để áp dụng các thuộc tính font
+
+    #                 for key, value in style_props.items():
+    #                     if isinstance(value, dict):
+    #                         # Xử lý các thuộc tính lồng nhau
+    #                         if key == "maximum-size":
+    #                             widget.setMaximumSize(
+    #                                 QSize(value["width"], value["height"]))
+    #                         elif key == "minimum-size":
+    #                             widget.setMinimumSize(
+    #                                 QSize(value["width"], value["height"]))
+    #                         elif key == "font":
+    #                             # Kiểm tra và thiết lập các thuộc tính font như size, family, weight
+    #                             if "size" in value:
+    #                                 font.setPointSize(value["size"])
+    #                             if "family" in value:
+    #                                 font.setFamily(value["family"])
+    #                             if "weight" in value:
+    #                                 if value["weight"].lower() == "bold":
+    #                                     font.setBold(True)
+    #                                 else:
+    #                                     font.setBold(False)
+    #                             widget.setFont(font)  # Áp dụng font cho widget
+    #                     else:
+    #                         # Áp dụng các thuộc tính CSS khác vào style_sheet
+    #                         style_sheet += f"{key}: {value}; "
+
+    #                 # Áp dụng style sheet cho widget
+    #                 widget.setStyleSheet(style_sheet)
+
+    #             else:
+    #                 print(f"Widget not found: {widget_name}")
+
+    #     except Exception as e:
+    #         print(f"Error loading JSON style: {e}")
     def load_json_style(self, json_file):
+        """
+        Load và áp dụng style từ file JSON cho các widget
+        json_file: đường dẫn đến file JSON chứa style
+        """
         try:
-            with open(json_file, "r") as file:
+            # Đọc file JSON
+            with open(json_file, "r", encoding='utf-8') as file:
                 styles = json.load(file)
 
+            # Xử lý style cho từng widget
             for widget_name, style_props in styles.items():
+                # Tìm widget theo tên
                 widget = self.findChild(QtWidgets.QWidget, widget_name)
-                if widget:
-                    style_sheet = ""
-                    font = QtGui.QFont()  # Tạo một QFont để áp dụng các thuộc tính font
+                if not widget:
+                    print(f"Widget không tìm thấy: {widget_name}")
+                    continue
 
-                    for key, value in style_props.items():
-                        if isinstance(value, dict):
-                            # Xử lý các thuộc tính lồng nhau
-                            if key == "maximum-size":
-                                widget.setMaximumSize(
-                                    QSize(value["width"], value["height"]))
-                            elif key == "minimum-size":
-                                widget.setMinimumSize(
-                                    QSize(value["width"], value["height"]))
-                            elif key == "font":
-                                # Kiểm tra và thiết lập các thuộc tính font như size, family, weight
-                                if "size" in value:
-                                    font.setPointSize(value["size"])
-                                if "family" in value:
-                                    font.setFamily(value["family"])
-                                if "weight" in value:
-                                    if value["weight"].lower() == "bold":
-                                        font.setBold(True)
+                # Xử lý các thuộc tính cơ bản của widget (font, size)
+                font = QtGui.QFont()
+                has_font = False
+
+                full_style = ""
+                for prop, value in style_props.items():
+                    if isinstance(value, dict):
+                        # Xử lý font
+                        if prop == "font":
+                            if "family" in value:
+                                font.setFamily(value["family"])
+                            if "size" in value:
+                                font.setPointSize(value["size"])
+                            if "weight" in value:
+                                if value["weight"].lower() == "bold":
+                                    font.setBold(True)
+                                elif value["weight"].lower() == "normal":
+                                    font.setBold(False)
+                            if "italic" in value:
+                                font.setItalic(value["italic"])
+                            has_font = True
+
+                        # Xử lý size
+                        elif prop == "size":
+                            if "fixed" in value:
+                                if "width" in value["fixed"] and "height" in value["fixed"]:
+                                    widget.setFixedSize(
+                                        value["fixed"]["width"], value["fixed"]["height"])
+                            if "minimum" in value:
+                                if "width" in value["minimum"] and "height" in value["minimum"]:
+                                    widget.setMinimumSize(
+                                        value["minimum"]["width"], value["minimum"]["height"])
+                            if "maximum" in value:
+                                if "width" in value["maximum"] and "height" in value["maximum"]:
+                                    widget.setMaximumSize(
+                                        value["maximum"]["width"], value["maximum"]["height"])
+
+                        # Xử lý style
+                        elif prop == "style":
+                            # Duyệt qua từng widget type trong style
+                            for widget_type, widget_style in value.items():
+                                style_str = ""
+                                states_style = {}
+                                sub_controls = {}
+
+                                # Xử lý từng thuộc tính style
+                                for key, val in widget_style.items():
+                                    if isinstance(val, dict):
+                                        # Xử lý các trạng thái đặc biệt
+                                        if key in ["hover", "pressed", "checked", "unchecked", "selected", "focus"]:
+                                            states_str = ""
+                                            for k, v in val.items():
+                                                states_str += f"{k}: {v};\n"
+                                            states_style[key] = states_str
+
+                                        # Xử lý các sub-controls
+                                        elif key in ["indicator", "handle", "add-line", "sub-line", "up-arrow", "down-arrow"]:
+                                            sub_str = ""
+                                            for k, v in val.items():
+                                                sub_str += f"{k}: {v};\n"
+                                            sub_controls[key] = sub_str
+
+                                        # Xử lý các thuộc tính lồng nhau khác
+                                        else:
+                                            nested_str = ""
+                                            for k, v in val.items():
+                                                nested_str += f"{k}: {v};\n"
+                                            style_str += f"{key} {{\n{nested_str}}}\n"
                                     else:
-                                        font.setBold(False)
-                                widget.setFont(font)  # Áp dụng font cho widget
-                        else:
-                            # Áp dụng các thuộc tính CSS khác vào style_sheet
-                            style_sheet += f"{key}: {value}; "
+                                        style_str += f"{key}: {val};\n"
 
-                    # Áp dụng style sheet cho widget
-                    widget.setStyleSheet(style_sheet)
+                                # Tạo style string hoàn chỉnh
+                                full_style += f"{widget_type} {{\n{style_str}}}\n"
 
-                else:
-                    print(f"Widget not found: {widget_name}")
+                                # Thêm các trạng thái
+                                for state, state_style in states_style.items():
+                                    full_style += f"{widget_type}:{
+                                        state} {{\n{state_style}}}\n"
+
+                                # Thêm các sub-controls
+                                for control, control_style in sub_controls.items():
+                                    full_style += f"{widget_type}::{
+                                        control} {{\n{control_style}}}\n"
+
+                # Áp dụng font nếu có
+                if has_font:
+                    widget.setFont(font)
+
+                # Áp dụng style sheet
+                if full_style:
+                    widget.setStyleSheet(full_style)
 
         except Exception as e:
-            print(f"Error loading JSON style: {e}")
+            print(f"Lỗi khi load JSON style: {e}")
 
     def update_time(self):
         # Lấy thời gian hiện tại
@@ -191,152 +354,6 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             print("Biểu đồ điện áp DC đã được vẽ trước đó, không cần vẽ lại.")
 
-    # def plot_temperature_chart_in_widget(self, data_points, temp_1, temp_2):
-    #     """
-    #     Vẽ biểu đồ nhiệt độ với tooltip thông minh tự động điều chỉnh vị trí
-    #     """
-    #     parent_widget = self.temp_chart
-    #     figure, ax = plt.subplots(figsize=(12, 6))
-
-    #     # Tách ngày giờ và nhiệt độ
-    #     dates, temperatures = zip(*data_points)
-
-    #     # Vẽ đường nhiệt độ chính
-    #     ax.plot(dates, temperatures, color='#0088FF',
-    #             linestyle='-', linewidth=1, label="Đường nhiệt độ")
-
-    #     # Vẽ các điểm dữ liệu và đường kẻ dọc
-    #     for date, temp in data_points:
-    #         color = 'red' if temp > temp_2 or temp < temp_1 else '#00FF00'
-    #         ax.scatter(date, temp, color=color, s=50)
-    #         ax.plot([date, date], [0, temp], color='gray',
-    #                 linestyle='-', linewidth=0.5, alpha=0.3)
-
-    #         # Vẽ các đường ngưỡng
-    #     ax.axhline(y=temp_1, color='#35ff00', linestyle='--',
-    #                linewidth=1, label=f"Ngưỡng {temp_1}°C")
-    #     ax.axhline(y=temp_2, color='#f600ff', linestyle='-.',
-    #                linewidth=1, label=f"Ngưỡng {temp_2}°C")
-
-    #     # Định dạng trục thời gian
-    #     time_format = mdates.DateFormatter("%H:%M")
-    #     ax.xaxis.set_major_formatter(time_format)
-    #     ax.xaxis.set_major_locator(mdates.AutoDateLocator())
-
-    #     # Thiết lập nhãn trục và tiêu đề
-    #     ax.set_xlabel("Thời gian", fontsize=10)
-    #     ax.xaxis.set_label_coords(0.95, -0.05)
-    #     ax.set_ylabel("Nhiệt độ (°C)", fontsize=10)
-    #     ax.yaxis.set_label_coords(-0.03, 0.9)
-    #     figure.text(0.5, 0.1, "Biểu đồ nhiệt độ", fontsize=14,
-    #                 ha='center', fontweight='bold')
-    #     ax.legend(loc='best')
-    #     ax.grid(False)
-
-    #     # Tối ưu layout
-    #     plt.tight_layout()
-    #     figure.autofmt_xdate()
-
-    #     # Tạo canvas và thêm vào widget
-    #     canvas = FigureCanvas(figure)
-    #     layout = parent_widget.layout()
-    #     if not layout:
-    #         layout = QtWidgets.QVBoxLayout(parent_widget)
-    #         parent_widget.setLayout(layout)
-    #     layout.addWidget(canvas)
-
-    #     # Tạo annotation cho tooltip với style mới
-    #     annot = ax.annotate(
-    #         "",
-    #         xy=(0, 0),
-    #         xytext=(0, 0),
-    #         textcoords="offset points",
-    #         bbox=dict(
-    #             boxstyle="round4,pad=0.5",
-    #             fc="white",
-    #             ec="gray",
-    #             alpha=0.9,
-    #             mutation_scale=0.8
-    #         ),
-    #         arrowprops=dict(
-    #             arrowstyle="-|>",
-    #             connectionstyle="arc3,rad=0.2",
-    #             color='gray'
-    #         )
-    #     )
-    #     annot.set_visible(False)
-
-    #     def get_smart_offset(date, temp, ax_bbox):
-    #         """
-    #         Tính toán offset thông minh cho tooltip dựa trên vị trí của điểm và kích thước của đồ thị
-    #         """
-    #         x_rel = (mdates.date2num(date) - ax.get_xlim()
-    #                  [0]) / (ax.get_xlim()[1] - ax.get_xlim()[0])
-    #         y_rel = (temp - ax.get_ylim()[0]) / \
-    #             (ax.get_ylim()[1] - ax.get_ylim()[0])
-
-    #         # Offset mặc định
-    #         x_offset = 10
-    #         y_offset = 10
-
-    #         # Điều chỉnh theo vị trí tương đối
-    #         if x_rel > 0.8:  # Gần mép phải
-    #             x_offset = -80
-    #         elif x_rel < 0.2:  # Gần mép trái
-    #             x_offset = 20
-
-    #         if y_rel > 0.8:  # Gần mép trên
-    #             y_offset = -40
-    #         elif y_rel < 0.2:  # Gần mép dưới
-    #             y_offset = 20
-
-    #         return x_offset, y_offset
-
-    #     def on_hover(event):
-    #         if event.inaxes == ax:
-    #             hit = False
-    #             for date, temp in data_points:
-    #                 # Tăng độ nhạy của vùng hover
-    #                 if abs(event.xdata - mdates.date2num(date)) <= 0.001 and abs(event.ydata - temp) <= 1:
-    #                     hit = True
-    #                     # Lấy offset thông minh
-    #                     x_offset, y_offset = get_smart_offset(
-    #                         date, temp, ax.bbox)
-
-    #                     # Cập nhật vị trí và thuộc tính của tooltip
-    #                     annot.xy = (mdates.date2num(date), temp)
-    #                     annot.set_position((x_offset, y_offset))
-
-    #                     # Định dạng nội dung tooltip
-    #                     tooltip_text = (
-    #                         f"Ngày: {date.strftime('%d/%m/%Y')}\n"
-    #                         f"Thời gian: {date.strftime('%H:%M')}\n"
-    #                         f"Nhiệt độ: {temp}°C"
-    #                     )
-    #                     if temp > temp_2:
-    #                         tooltip_text += "\n⚠️ Nhiệt độ cao"
-    #                     elif temp < temp_1:
-    #                         tooltip_text += "\n⚠️ Nhiệt độ thấp"
-
-    #                     annot.set_text(tooltip_text)
-
-    #                     # Đổi màu tooltip theo trạng thái nhiệt độ
-    #                     if temp > temp_2 or temp < temp_1:
-    #                         annot.get_bbox_patch().set(fc="#F01F1F")
-    #                     else:
-    #                         annot.get_bbox_patch().set(fc="#00FF00")
-
-    #                     annot.set_visible(True)
-    #                     canvas.draw_idle()
-    #                     break
-
-    #             if not hit and annot.get_visible():
-    #                 annot.set_visible(False)
-    #                 canvas.draw_idle()
-
-    #     canvas.mpl_connect("motion_notify_event", on_hover)
-    #     canvas.setSizePolicy(QSizePolicy.Policy.Expanding,
-    #                          QSizePolicy.Policy.Expanding)
     def plot_temperature_chart_in_widget(self, data_points, data_points_2, temp_1, temp_2):
         """
         Vẽ biểu đồ nhiệt độ với tooltip thông minh tự động điều chỉnh vị trí
@@ -450,47 +467,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
             return x_offset, y_offset
 
-        # def on_hover(event):
-        #     if event.inaxes == ax:
-        #         hit = False
-        #         for date, temp in data_points + data_points_2:
-        #             # Tăng độ nhạy của vùng hover
-        #             if abs(event.xdata - mdates.date2num(date)) <= 0.001 and abs(event.ydata - temp) <= 1:
-        #                 hit = True
-        #                 # Lấy offset thông minh
-        #                 x_offset, y_offset = get_smart_offset(
-        #                     date, temp, ax.bbox)
-
-        #                 # Cập nhật vị trí và thuộc tính của tooltip
-        #                 annot.xy = (mdates.date2num(date), temp)
-        #                 annot.set_position((x_offset, y_offset))
-
-        #                 # Định dạng nội dung tooltip
-        #                 tooltip_text = (
-        #                     f"Ngày: {date.strftime('%d/%m/%Y')}\n"
-        #                     f"Thời gian: {date.strftime('%H:%M')}\n"
-        #                     f"Nhiệt độ: {temp}°C"
-        #                 )
-        #                 if temp > temp_2:
-        #                     tooltip_text += "\n⚠️ Nhiệt độ cao"
-        #                 elif temp < temp_1:
-        #                     tooltip_text += "\n⚠️ Nhiệt độ thấp"
-
-        #                 annot.set_text(tooltip_text)
-
-        #                 # Đổi màu tooltip theo trạng thái nhiệt độ
-        #                 if temp > temp_2 or temp < temp_1:
-        #                     annot.get_bbox_patch().set(fc="#F01F1F")
-        #                 else:
-        #                     annot.get_bbox_patch().set(fc="#00FF00")
-
-        #                 annot.set_visible(True)
-        #                 canvas.draw_idle()
-        #                 break
-
-        #         if not hit and annot.get_visible():
-        #             annot.set_visible(False)
-        #             canvas.draw_idle()
         def on_hover(event):
             if event.inaxes == ax:
                 hit = False
@@ -638,151 +614,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return button
 
-    # def plot_humidity_chart_in_widget(self, data_points, hum_1, hum_2):
-    #     """
-    #     Vẽ biểu đồ độ ẩm với tooltip thông minh tự động điều chỉnh vị trí
-    #     """
-    #     parent_widget = self.humi_chart
-    #     figure, ax = plt.subplots(figsize=(12, 6))
-
-    #     # Tách ngày giờ và độ ẩm
-    #     dates, humidities = zip(*data_points)
-
-    #     # Vẽ đường độ ẩm chính
-    #     ax.plot(dates, humidities, color='#0088FF',
-    #             linestyle='-', linewidth=1, label="Đường độ ẩm")
-
-    #     # Vẽ các điểm dữ liệu và đường kẻ dọc
-    #     for date, hum in data_points:
-    #         color = 'red' if hum > hum_2 or hum < hum_1 else '#00FF00'
-    #         ax.scatter(date, hum, color=color, s=50)
-    #         ax.plot([date, date], [0, hum], color='gray',
-    #                 linestyle='-', linewidth=0.5, alpha=0.3)
-
-    #     # Vẽ các đường ngưỡng
-    #     ax.axhline(y=hum_1, color='#35ff00', linestyle='--',
-    #                linewidth=1, label=f"Ngưỡng {hum_1}%")
-    #     ax.axhline(y=hum_2, color='#f600ff', linestyle='-.',
-    #                linewidth=1, label=f"Ngưỡng {hum_2}%")
-
-    #     # Định dạng trục thời gian
-    #     time_format = mdates.DateFormatter("%H:%M")
-    #     ax.xaxis.set_major_formatter(time_format)
-    #     ax.xaxis.set_major_locator(mdates.AutoDateLocator())
-
-    #     # Thiết lập nhãn trục và tiêu đề
-    #     ax.set_xlabel("Thời gian", fontsize=10)
-    #     ax.xaxis.set_label_coords(0.95, -0.05)
-    #     ax.set_ylabel("Độ ẩm (%)", fontsize=10)
-    #     ax.yaxis.set_label_coords(-0.03, 0.9)
-    #     figure.text(0.5, 0.1, "Biểu đồ độ ẩm", fontsize=14,
-    #                 ha='center', fontweight='bold')
-    #     ax.legend(loc='best')
-    #     ax.grid(False)
-
-    #     # Tối ưu layout
-    #     plt.tight_layout()
-    #     figure.autofmt_xdate()
-
-    #     # Tạo canvas và thêm vào widget
-    #     canvas = FigureCanvas(figure)
-    #     layout = parent_widget.layout()
-    #     if not layout:
-    #         layout = QtWidgets.QVBoxLayout(parent_widget)
-    #         parent_widget.setLayout(layout)
-    #     layout.addWidget(canvas)
-
-    #     # Tạo annotation cho tooltip với style mới
-    #     annot = ax.annotate(
-    #         "",
-    #         xy=(0, 0),
-    #         xytext=(0, 0),
-    #         textcoords="offset points",
-    #         bbox=dict(
-    #             boxstyle="round4,pad=0.5",
-    #             fc="white",
-    #             ec="gray",
-    #             alpha=0.9,
-    #             mutation_scale=0.8
-    #         ),
-    #         arrowprops=dict(
-    #             arrowstyle="-|>",
-    #             connectionstyle="arc3,rad=0.2",
-    #             color='gray'
-    #         )
-    #     )
-    #     annot.set_visible(False)
-
-    #     def get_smart_offset(date, hum, ax_bbox):
-    #         """
-    #         Tính toán offset thông minh cho tooltip dựa trên vị trí của điểm và kích thước của đồ thị
-    #         """
-    #         x_rel = (mdates.date2num(date) - ax.get_xlim()
-    #                  [0]) / (ax.get_xlim()[1] - ax.get_xlim()[0])
-    #         y_rel = (hum - ax.get_ylim()[0]) / \
-    #             (ax.get_ylim()[1] - ax.get_ylim()[0])
-
-    #         # Offset mặc định
-    #         x_offset = 10
-    #         y_offset = 10
-
-    #         # Điều chỉnh theo vị trí tương đối
-    #         if x_rel > 0.8:  # Gần mép phải
-    #             x_offset = -80
-    #         elif x_rel < 0.2:  # Gần mép trái
-    #             x_offset = 20
-
-    #         if y_rel > 0.8:  # Gần mép trên
-    #             y_offset = -40
-    #         elif y_rel < 0.2:  # Gần mép dưới
-    #             y_offset = 20
-
-    #         return x_offset, y_offset
-
-    #     def on_hover(event):
-    #         if event.inaxes == ax:
-    #             hit = False
-    #             for date, hum in data_points:
-    #                 # Tăng độ nhạy của vùng hover
-    #                 if abs(event.xdata - mdates.date2num(date)) <= 0.001 and abs(event.ydata - hum) <= 1:
-    #                     hit = True
-    #                     # Lấy offset thông minh
-    #                     x_offset, y_offset = get_smart_offset(
-    #                         date, hum, ax.bbox)
-
-    #                     # Cập nhật vị trí và thuộc tính của tooltip
-    #                     annot.xy = (mdates.date2num(date), hum)
-    #                     annot.set_position((x_offset, y_offset))
-
-    #                     tooltip_text = (
-    #                         f"Ngày: {date.strftime('%d/%m/%Y')}\n"
-    #                         f"Thời gian: {date.strftime('%H:%M')}\n"
-    #                         f"Độ ẩm: {hum}%"
-    #                     )
-    #                     if hum > hum_2:
-    #                         tooltip_text += "\n⚠️ Độ ẩm cao"
-    #                     elif hum < hum_1:
-    #                         tooltip_text += "\n⚠️ Độ ẩm thấp"
-
-    #                     annot.set_text(tooltip_text)
-
-    #                     # Đổi màu tooltip theo trạng thái độ ẩm
-    #                     if hum > hum_2 or hum < hum_1:
-    #                         annot.get_bbox_patch().set(fc="#F01F1F")
-    #                     else:
-    #                         annot.get_bbox_patch().set(fc="#00FF00")
-
-    #                     annot.set_visible(True)
-    #                     canvas.draw_idle()
-    #                     break
-
-    #             if not hit and annot.get_visible():
-    #                 annot.set_visible(False)
-    #                 canvas.draw_idle()
-
-    #     canvas.mpl_connect("motion_notify_event", on_hover)
-    #     canvas.setSizePolicy(QSizePolicy.Policy.Expanding,
-    #                          QSizePolicy.Policy.Expanding)
     def plot_humidity_chart_in_widget(self, data_points, data_points_2, humidity_1, humidity_2):
         """
         Vẽ biểu đồ độ ẩm với tooltip thông minh tự động điều chỉnh vị trí

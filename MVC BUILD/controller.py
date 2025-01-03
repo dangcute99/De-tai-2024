@@ -21,6 +21,7 @@ class Controller():
         self.my_view.ui.setupUi(open_window)
         self.my_view.ui.connect_login_button(self.handle_login)
         self.my_view.ui.connect_sql_setting_button(self.on_sql_setting_clicked)
+
         self.create_config_file()
         # self.load_login_data()
         self.my_view.ui.connect_load_login_info(self.load_login_in4())
@@ -139,8 +140,9 @@ class Controller():
         else:
             self.sql_login_window.close()  # Đóng cửa sổ nếu nó đã mở
         self.my_view.sql_login.load_sql_data(self.load_sql_login_in4())
-########################################################################
-# link với sql_setting
+
+        ########################################################################
+        # link với sql_setting
 
     def load_sql_login_in4(self):
         with open(self.sql_config_file_path, 'r') as file:
@@ -178,6 +180,8 @@ class Controller():
         self.my_view.main.connect_dc_button(self.dc_button)
         self.my_view.main.connect_error_button(self.error_button)
         self.my_view.main.connect_chung_tram_button(self.chung_tram_button)
+        self.my_view.main.connect_setting_button(
+            self.setting_button)
 
     ################################################################
     def anh_tram_1_button(self):
@@ -247,6 +251,9 @@ class Controller():
 
     def chung_tram_button(self):
         self.my_view.main.hienthi.setCurrentIndex(0)
+
+    def setting_button(self):
+        self.my_view.main.hienthi.setCurrentIndex(5)
 ################################################################
 
 
