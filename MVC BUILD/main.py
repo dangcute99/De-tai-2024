@@ -111,50 +111,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 tram.setStyleSheet(
                     "color: black;font:bold; background: transparent; border: none;")
 
-    # def load_json_style(self, json_file):
-    #     try:
-    #         with open(json_file, "r") as file:
-    #             styles = json.load(file)
-
-    #         for widget_name, style_props in styles.items():
-    #             widget = self.findChild(QtWidgets.QWidget, widget_name)
-    #             if widget:
-    #                 style_sheet = ""
-    #                 font = QtGui.QFont()  # Tạo một QFont để áp dụng các thuộc tính font
-
-    #                 for key, value in style_props.items():
-    #                     if isinstance(value, dict):
-    #                         # Xử lý các thuộc tính lồng nhau
-    #                         if key == "maximum-size":
-    #                             widget.setMaximumSize(
-    #                                 QSize(value["width"], value["height"]))
-    #                         elif key == "minimum-size":
-    #                             widget.setMinimumSize(
-    #                                 QSize(value["width"], value["height"]))
-    #                         elif key == "font":
-    #                             # Kiểm tra và thiết lập các thuộc tính font như size, family, weight
-    #                             if "size" in value:
-    #                                 font.setPointSize(value["size"])
-    #                             if "family" in value:
-    #                                 font.setFamily(value["family"])
-    #                             if "weight" in value:
-    #                                 if value["weight"].lower() == "bold":
-    #                                     font.setBold(True)
-    #                                 else:
-    #                                     font.setBold(False)
-    #                             widget.setFont(font)  # Áp dụng font cho widget
-    #                     else:
-    #                         # Áp dụng các thuộc tính CSS khác vào style_sheet
-    #                         style_sheet += f"{key}: {value}; "
-
-    #                 # Áp dụng style sheet cho widget
-    #                 widget.setStyleSheet(style_sheet)
-
-    #             else:
-    #                 print(f"Widget not found: {widget_name}")
-
-    #     except Exception as e:
-    #         print(f"Error loading JSON style: {e}")
     def load_json_style(self, json_file):
         """
         Load và áp dụng style từ file JSON cho các widget
@@ -217,30 +173,84 @@ class MainWindow(QtWidgets.QMainWindow):
                                 style_str = ""
                                 states_style = {}
                                 sub_controls = {}
+                                nested_states = {}
+
+                                # Hàm xử lý các thuộc tính lồng nhau
+                                def process_nested_dict(prefix, d, indent="    "):
+                                    result = ""
+                                    for k, v in d.items():
+                                        if isinstance(v, dict):
+                                            # Nếu là state của indicator
+                                            if k in ["hover", "pressed", "checked", "unchecked", "selected", "focus", "disabled", "indeterminate"]:
+                                                nested_states[f"{
+                                                    prefix}:{k}"] = v
+                                            else:
+                                                result += f"{indent}{k} {{\n"
+                                                result += process_nested_dict(
+                                                    "", v, indent + "    ")
+                                                result += f"{indent}}}\n"
+                                        else:
+                                            result += f"{indent}{k}: {v};\n"
+                                    return result
 
                                 # Xử lý từng thuộc tính style
                                 for key, val in widget_style.items():
                                     if isinstance(val, dict):
                                         # Xử lý các trạng thái đặc biệt
-                                        if key in ["hover", "pressed", "checked", "unchecked", "selected", "focus"]:
+                                        if key in ["hover", "pressed", "checked", "unchecked", "selected", "focus", "disabled", "indeterminate"]:
                                             states_str = ""
-                                            for k, v in val.items():
-                                                states_str += f"{k}: {v};\n"
-                                            states_style[key] = states_str
+                                            # Xử lý indicator trong state nếu có
+                                            if "indicator" in val:
+                                                sub_str = process_nested_dict(
+                                                    "", val["indicator"])
+                                                states_style[f"{
+                                                    key}::indicator"] = sub_str
+                                                # Xử lý các thuộc tính khác của state
+                                                other_props = {
+                                                    k: v for k, v in val.items() if k != "indicator"}
+                                                if other_props:
+                                                    for k, v in other_props.items():
+                                                        states_str += f"{k}: {v};\n"
+                                                    states_style[key] = states_str
+                                            else:
+                                                for k, v in val.items():
+                                                    states_str += f"{k}: {v};\n"
+                                                states_style[key] = states_str
 
                                         # Xử lý các sub-controls
                                         elif key in ["indicator", "handle", "add-line", "sub-line", "up-arrow", "down-arrow"]:
                                             sub_str = ""
-                                            for k, v in val.items():
+                                            # Tách các state và thuộc tính thường của sub-control
+                                            base_props = {
+                                                k: v for k, v in val.items() if not isinstance(v, dict)}
+                                            state_props = {
+                                                k: v for k, v in val.items() if isinstance(v, dict)}
+
+                                            # Xử lý các thuộc tính cơ bản
+                                            for k, v in base_props.items():
                                                 sub_str += f"{k}: {v};\n"
                                             sub_controls[key] = sub_str
+
+                                            # Xử lý các state của sub-control
+                                            if state_props:
+                                                for state_name, state_val in state_props.items():
+                                                    if isinstance(state_val, dict):
+                                                        state_str = ""
+                                                        for k, v in state_val.items():
+                                                            state_str += f"{k}: {v};\n"
+                                                        nested_states[f"::{key}:{
+                                                            state_name}"] = state_str
 
                                         # Xử lý các thuộc tính lồng nhau khác
                                         else:
                                             nested_str = ""
                                             for k, v in val.items():
-                                                nested_str += f"{k}: {v};\n"
-                                            style_str += f"{key} {{\n{nested_str}}}\n"
+                                                if isinstance(v, dict):
+                                                    nested_str += process_nested_dict(
+                                                        key, v)
+                                                else:
+                                                    nested_str += f"{k}: {v};\n"
+                                            style_str += nested_str
                                     else:
                                         style_str += f"{key}: {val};\n"
 
@@ -257,13 +267,18 @@ class MainWindow(QtWidgets.QMainWindow):
                                     full_style += f"{widget_type}::{
                                         control} {{\n{control_style}}}\n"
 
-                # Áp dụng font nếu có
-                if has_font:
-                    widget.setFont(font)
+                                # Thêm các trạng thái lồng nhau
+                                for nested_state, nested_style in nested_states.items():
+                                    full_style += f"{widget_type}{
+                                        nested_state} {{\n{nested_style}}}\n"
 
-                # Áp dụng style sheet
-                if full_style:
-                    widget.setStyleSheet(full_style)
+                    # Áp dụng font nếu có
+                    if has_font:
+                        widget.setFont(font)
+
+                    # Áp dụng style sheet
+                    if full_style:
+                        widget.setStyleSheet(full_style)
 
         except Exception as e:
             print(f"Lỗi khi load JSON style: {e}")
