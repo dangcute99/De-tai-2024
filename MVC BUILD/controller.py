@@ -71,7 +71,9 @@ class Controller():
     def handle_login(self):
         self.save_checkbox()
         login_data = self.my_view.ui.return_login_in4()
+        # print(login_data)
         in_4 = self.load_sql_login_in4()
+        # print(in_4)
         self.my_model = Model(in_4)
         if not (self.my_model.check_connection()):
             self.my_view.ui.return_sql_status(False)
@@ -86,7 +88,7 @@ class Controller():
             else:
                 self.my_view.ui.return_login_status(False)
 
-        # return login_data
+        # return login_data,
         # self.my_view.ui.return_login_status(True)
 
     def check_sql_connection(self):
@@ -100,7 +102,7 @@ class Controller():
         if (self.checkbox_status):
             # print("true")
             login_data["username"] = data["username"]
-            login_data["password"] = data["password"]
+            login_data["passwords"] = data["passwords"]
             login_data["checkbox"] = 1
         else:
             login_data["checkbox"] = 0

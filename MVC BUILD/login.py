@@ -296,7 +296,7 @@ class Ui_API(object):
     def return_login_in4(self):
         data = {
             "username": self.taikhoan.text(),
-            "password": self.taikhoan1_2.text()
+            "passwords": self.taikhoan1_2.text()
         }
         return data
 
@@ -313,7 +313,7 @@ class Ui_API(object):
         # Kiểm tra giá trị của checkbox
         if login_data.get("checkbox") == 1:
             self.taikhoan.setText(login_data.get("username", ""))
-            self.taikhoan1_2.setText(login_data.get("password", ""))
+            self.taikhoan1_2.setText(login_data.get("passwords", ""))
             self.checkBox.setChecked(True)  # Đánh dấu checkbox
         else:
             self.checkBox.setChecked(False)  # Bỏ đánh dấu checkbox

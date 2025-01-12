@@ -933,10 +933,10 @@
             "color": "#333333",
             "padding": "3px",
             "indicator": {
-                "width": "18px",
-                "height": "18px",
-                "border": "2px solid #999999",
-                "border-radius": "3px",
+                "width": "14px",
+                "height": "14px",
+                "border": "1px solid #999999",
+                "border-radius": "4px",
                 "background-color": "white",
                 "hover": {
                     "border-color": "#0078D7"
@@ -945,7 +945,7 @@
                     "background-color": "#0078D7",
                     "border-color": "#0078D7"},
                 "unchecked": {
-                        "background-color": "red",
+                        "background-color": "white",
                         "border-color": "#999999"
                 }
                 ,
@@ -972,4 +972,162 @@
         }
     }
 }
+,
+"radioButton": {
+        "style": {
+            "QRadioButton": {
+                "spacing": "7px",
+                "color": "#333333",
+                "padding": "3px",
+                "indicator": {
+                    "width": "14px",
+                    "height": "14px",
+                    "border": "1px solid #999999",
+                    "border-radius": "7px",
+                    "background-color": "white",
+                    "hover": {
+                        "border-color": "#0078D7"
+                    },
+                    "checked": {
+                        "background-color": "#0078D7",
+                        "border-color": "#0078D7"},
+                    "unchecked": {
+                            "background-color": "white",
+                            "border-color": "#999999"
+                    }
+                    ,
+                    "disabled":
+                    {
+                        "color":"#999999",
+                        "border-color": "#cccccc",
+                        "background-color": "#f0f0f0"
+                    }
+                    ,
+                    "pressed":
+                    {
+                        "color":"#999999",
+                        "border-color": "#cccccc",
+                        "background-color": "#f0f0f0"
+                    }
+                    ,
+                    "focus":
+                    {
+                        "border-color": "#0078D7"
+                    }
+                }
+            }
+        }
+    }
+,
+"radioButton_3": {
+        "style": {
+            "QRadioButton": {
+                "spacing": "7px",
+                "color": "#333333",
+                "padding": "3px",
+                "indicator": {
+                    "width": "14px",
+                    "height": "14px",
+                    "border": "1px solid #999999",
+                    "border-radius": "7px",
+                    "background-color": "white",
+                    "hover": {
+                        "border-color": "#0078D7"
+                    },
+                    "checked": {
+                        "background-color": "#0078D7",
+                        "border-color": "#0078D7"},
+                    "unchecked": {
+                            "background-color": "white",
+                            "border-color": "#999999"
+                    }
+                    ,
+                    "disabled":
+                    {
+                        "color":"#999999",
+                        "border-color": "#cccccc",
+                        "background-color": "#f0f0f0"
+                    }
+                    ,
+                    "pressed":
+                    {
+                        "color":"#999999",
+                        "border-color": "#cccccc",
+                        "background-color": "#f0f0f0"
+                    }
+                    ,
+                    "focus":
+                    {
+                        "border-color": "#0078D7"
+                    }
+                }
+            }
+        }
+    }
+,
+"pushButton": 
+  {
+      "font": {
+          "family": "Arial",
+          "size": 14,
+          "weight": "bold"
+      },
+      "size": {
+          "minimum": {
+              "width": 100,
+              "height": 30
+          },
+          "maximum": {
+              "width": 200,
+              "height": 30
+          }
+      },
+      "style": {
+          "QPushButton": {
+              "color": "rgb(0,0,0)",  
+              "background-color": "rgb(250,250,250)",
+              "border": "1px solid black",
+              "border-radius": "10px",
+              "hover": {
+                  "background-color": "rgba(0,212,255,0.5)"
+              },
+              "pressed": {
+                  "background-color": "rgba(0,212,255,1)"
+              }
+          }
+      }
+  }
+,
+"pushButton_3": 
+  {
+      "font": {
+          "family": "Arial",
+          "size": 14,
+          "weight": "bold"
+      },
+      "size": {
+          "minimum": {
+              "width": 100,
+              "height": 30
+          },
+          "maximum": {
+              "width": 200,
+              "height": 30
+          }
+      },
+      "style": {
+          "QPushButton": {
+              "color": "rgb(0,0,0)",  
+              "background-color": "rgb(250,250,250)",
+              "border": "1px solid black",
+              "border-radius": "10px",
+              "hover": {
+                  "background-color": "rgba(0,212,255,0.5)"
+              },
+              "pressed": {
+                  "background-color": "rgba(0,212,255,1)"
+              }
+          }
+      }
+  }
 }

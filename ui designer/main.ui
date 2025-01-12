@@ -2093,7 +2093,7 @@ border-radius:20px
 </string>
             </property>
             <property name="currentIndex">
-             <number>5</number>
+             <number>3</number>
             </property>
             <widget class="QWidget" name="chung">
              <widget class="QWidget" name="verticalLayoutWidget">

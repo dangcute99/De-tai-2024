@@ -37,23 +37,9 @@ create_table_login_in4_query = """CREATE TABLE IF NOT EXISTS login_in4 (
     id INT AUTO_INCREMENT PRIMARY KEY,
     timestamp DATETIME NOT NULL,
     username VARCHAR(255),
-    passwords INT
+    passwords VARCHAR(255)
 );
 """
-# Kết nối đến MySQL Server mà không chỉ định cơ sở dữ liệu
-# db = DatabaseConnection(**db_in4.db_config)
-# db.create_database('data')
-# db.execute_query(create_table_measurements_query, 'data')
-# db.execute_query(create_table_faults_query, 'data')
-# db.execute_query(create_table_user_query, 'data')
-# users_data = {
-#     'username': {'value': 'admin'},
-#     'passwords': {'value': 123456},
-
-# }
-# db.insert_multiple_values('data', 'users', users_data)
-# db.close_connection()
-###########################################################################################
 
 
 class Model:
@@ -69,30 +55,50 @@ class Model:
     def create_table_in4_if_not_exists(self):
         self.db.create_database('data')
         self.db.execute_query(create_table_login_in4_query, 'data')
-        users_data = {'username': 'admin', 'passwords': '123456'}
-        if not (self.user_exists('login_in4', users_data)):
-            self.insert_multiple_values('data', 'login_in4', users_data)
+        default_users_data = {'username': 'admin', 'passwords': '123456'}
+        if not (self.user_exists('login_in4', default_users_data)):
+            self.insert_multiple_values(
+                'data', 'login_in4', default_users_data)
+            print("Đã tạo user mặc định")
+        else:
+            print("User mặc định đã tồn tại")
 
-    def return_user_exists(self, users_data):
-        return self.user_exists('login_in4', users_data)
+    def return_user_exists(self, users_data_1):
+        return self.user_exists('login_in4', users_data_1)
 
     def user_exists(self, table, users_data):
         # Lấy giá trị username và passwords từ dictionary users_data
         username = users_data.get('username')
-        password = users_data.get('password')
+        password = users_data.get('passwords')
         # print(username, password)
         # Truy vấn kiểm tra xem người dùng có tồn tại trong bảng login_in4 không
-        query = f"SELECT COUNT(*) FROM {table}  WHERE username = '{
+        query = f"SELECT COUNT(*) FROM {table} WHERE username = '{
             username}' AND passwords = '{password}'"
-
+        # print(query)
         # Gọi execute_query để kiểm tra sự tồn tại của username và password
         result = self.db.execute_query(query, 'data')
+        print(result)
 
         # Kiểm tra kết quả của truy vấn
         if result and result[0][0] > 0:
+            print("Người dùng tồn tại")
             return True  # Người dùng tồn tại
         else:
+            print("Người dùng không tồn tại")
             return False  # Người dùng không tồn tại
+
+    def check_login(self, username, password, database):
+        """Kiểm tra thông tin đăng nhập"""
+        query = f"""
+        SELECT * FROM users
+        WHERE username = '{username}'
+        AND password = '{password}'
+        """
+        result = self.execute_query(query, database)
+
+        if result:
+            return True  # Đăng nhập thành công
+        return False    # Đăng nhập thất bại
 
     def get_x_values_latest(self, database, table, column_name, x=1):
         latest_data = self.db.get_x_notnull(
@@ -129,14 +135,6 @@ class Model:
         return self.db.delete_row(database, table, id_row)
 
     def update_row(self, database, table, id_row, data):
-        # users_data = {
-        #     'id': 1,
-        #     'username': {'value': 'admin'},
-        #     'passwords': {'value': 1234568},
-
-        # }
-        # db.update_row('data', 'users',
-        #                         2, users_data)  # Cập nhật hàng có ID 123
         return self.db.update_row(database, table, id_row, data)
 
     def check_in4(self, database, table, username, password):
@@ -145,25 +143,28 @@ class Model:
     def close_connection(self):
         self.db.close_connection()
 
-    # def create_default_user(self, database):
 
-        # ###########################################################################################
-        # ###########################################################################################
+# def create_default_user(self, database):
 
-        # db = DatabaseConnection(**db_in4.db_config)
-        # column_to_check = 'humidity'  # Hoặc bất kỳ cột nào bạn muốn kiểm tra
-        # latest_data = db.get_x_notnull(
-        #     'data', 'measurements', column_to_check, x=30)
+# ###########################################################################################
+# ###########################################################################################
 
-        # # In kết quả
-        # if latest_data:
-        #     for row in latest_data:
-        #         print(f"ID: {row['id']}, Thời gian: {row['timestamp']}, {
-        #               column_to_check}: {row[column_to_check]}")
-        # else:
-        #     print("Không tìm thấy dữ liệu hoặc có lỗi xảy ra.")
+# db = DatabaseConnection(**db_in4.db_config)
+# column_to_check = 'humidity'  # Hoặc bất kỳ cột nào bạn muốn kiểm tra
+# latest_data = db.get_x_notnull(
+#     'data', 'measurements', column_to_check, x=30)
 
-        # db.close_connection()
-        # ###########################################################################################
+# # In kết quả
+# if latest_data:
+#     for row in latest_data:
+#         print(f"ID: {row['id']}, Thời gian: {row['timestamp']}, {
+#               column_to_check}: {row[column_to_check]}")
+# else:
+#     print("Không tìm thấy dữ liệu hoặc có lỗi xảy ra.")
+
+# db.close_connection()
+# ###########################################################################################
 # db_config = {'host': 'localhost', 'username': 'root', 'password': '992002'}
 # model = Model(db_config)
+# model.user_exists(
+#     'login_in4', {'username': 'admin', 'passwords': '123456'})

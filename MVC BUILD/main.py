@@ -53,11 +53,11 @@ class MainWindow(QtWidgets.QMainWindow):
     def setting_ui(self):
         self.doubleSpinBox.setDecimals(1)
         self.doubleSpinBox.setSingleStep(0.5)
-        self.doubleSpinBox.setSuffix(" %")
+        self.doubleSpinBox.setSuffix("°C")
         ################################################################
         self.doubleSpinBox_7.setDecimals(1)
         self.doubleSpinBox_7.setSingleStep(0.5)
-        self.doubleSpinBox_7.setSuffix(" %")
+        self.doubleSpinBox_7.setSuffix("°C")
         ################################################################
         self.doubleSpinBox_2.setDecimals(1)
         self.doubleSpinBox_2.setSingleStep(0.5)
@@ -83,22 +83,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.doubleSpinBox_8.setDecimals(0)
         self.doubleSpinBox_8.setSuffix("°C")
         ################################################################
-        # self.checkBox.setStyleSheet("  QCheckBox {\n"
-        #                             "        color: rgb(0,0,0);  \n"
-        #                             "    }\n"
-        #                             "    QCheckBox::indicator {\n"
-        #                             "        width: 12px;\n"
-        #                             "        height: 12px;\n"
-        #                             "        border-radius:6px;\n"
-        #                             "    }\n"
-        #                             "    QCheckBox::indicator:unchecked {\n"
-        #                             "        background-color: white;  \n"
-        #                             "        border: 1px solid black;\n"
-        #                             "    }\n"
-        #                             "    QCheckBox::indicator:checked {\n"
-        #                             "        background-color: blue;\n"
-        #                             "        border: 1px solid black;\n"
-        #                             "    }")
 
     def set_tentram(self, tentram):
         # Thiết lập tên cho các trạm
