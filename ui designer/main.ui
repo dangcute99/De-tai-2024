@@ -2093,7 +2093,7 @@ border-radius:20px
 </string>
             </property>
             <property name="currentIndex">
-             <number>3</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="chung">
              <widget class="QWidget" name="verticalLayoutWidget">
@@ -2157,7 +2157,7 @@ border-radius:20px
                <rect>
                 <x>730</x>
                 <y>10</y>
-                <width>202</width>
+                <width>351</width>
                 <height>461</height>
                </rect>
               </property>
@@ -2191,6 +2191,56 @@ border-radius:20px
                </item>
                <item>
                 <widget class="QToolButton" name="temp_value">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>60</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>20</pointsize>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">border-radius:20px,
+font-pointSize
+</string>
+                 </property>
+                 <property name="text">
+                  <string>Nhiệt độ:</string>
+                 </property>
+                 <property name="icon">
+                  <iconset>
+                   <normaloff>../MVC BUILD/picture/green.png</normaloff>../MVC BUILD/picture/green.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>30</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="toolButtonStyle">
+                  <enum>Qt::ToolButtonTextBesideIcon</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QToolButton" name="temp_value_2">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="minimumSize">
                   <size>
                    <width>200</width>
@@ -2229,6 +2279,55 @@ font-pointSize
                </item>
                <item>
                 <widget class="QToolButton" name="humi_value">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>60</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">border-radius:20px
+</string>
+                 </property>
+                 <property name="text">
+                  <string>Độ ẩm:</string>
+                 </property>
+                 <property name="icon">
+                  <iconset>
+                   <normaloff>../MVC BUILD/picture/green.png</normaloff>../MVC BUILD/picture/green.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>30</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="toolButtonStyle">
+                  <enum>Qt::ToolButtonTextBesideIcon</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QToolButton" name="humi_value_2">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="minimumSize">
                   <size>
                    <width>200</width>
@@ -2266,6 +2365,12 @@ font-pointSize
                </item>
                <item>
                 <widget class="QToolButton" name="dc1_value">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="minimumSize">
                   <size>
                    <width>200</width>
@@ -2303,6 +2408,12 @@ font-pointSize
                </item>
                <item>
                 <widget class="QToolButton" name="dc2_value">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="minimumSize">
                   <size>
                    <width>200</width>
@@ -3039,6 +3150,158 @@ font-pointSize
                </item>
                <item>
                 <layout class="QGridLayout" name="gridLayout_8">
+                 <item row="0" column="0">
+                  <spacer name="verticalSpacer_9">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QDoubleSpinBox" name="doubleSpinBox_8">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>50</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_66">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>50</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Đèn</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="0">
+                  <widget class="QLabel" name="label_68">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>50</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Thiết bị 1</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="1">
+                  <widget class="QCheckBox" name="checkBox_2">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">
+            QCheckBox: {
+                &quot;spacing&quot;: &quot;7px&quot;,
+                &quot;color&quot;: &quot;#333333&quot;,
+                &quot;padding&quot;: &quot;3px&quot;,
+                &quot;indicator&quot;: {
+                    &quot;width&quot;: &quot;18px&quot;,
+                    &quot;height&quot;: &quot;18px&quot;,
+                    &quot;border&quot;: &quot;2px solid #999999&quot;,
+                    &quot;border-radius&quot;: &quot;3px&quot;,
+                    &quot;background-color&quot;: &quot;white&quot;,
+                    &quot;image-position&quot;: &quot;center center&quot;,
+                    &quot;hover&quot;: {
+                        &quot;border-color&quot;: &quot;#0078D7&quot;
+                    }
+                },
+                &quot;checked&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;background-color&quot;: &quot;#0078D7&quot;,
+                        &quot;border-color&quot;: &quot;#0078D7&quot;
+                    }
+                },
+                &quot;unchecked&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;background-color&quot;: &quot;white&quot;
+                    }
+                },
+                &quot;indeterminate&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;background-color&quot;: &quot;#f0f0f0&quot;
+                    }
+                },
+                &quot;disabled&quot;: {
+                    &quot;color&quot;: &quot;#999999&quot;,
+                    &quot;indicator&quot;: {
+                        &quot;border-color&quot;: &quot;#cccccc&quot;,
+                        &quot;background-color&quot;: &quot;#f0f0f0&quot;
+                    }
+                },
+                &quot;focus&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;border-color&quot;: &quot;#0078D7&quot;
+                    }
+                },
+                &quot;hover&quot;: {
+                    &quot;color&quot;: &quot;#000000&quot;
+                },
+                &quot;pressed&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;border-color&quot;: &quot;#005a9e&quot;,
+                        &quot;background-color&quot;: &quot;#e5f3ff&quot;
+                    }
+                }
+            }
+    
+  </string>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="0">
+                  <spacer name="verticalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_65">
+                   <property name="maximumSize">
+                    <size>
+                     <width>150</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Nhiệt độ điều hòa</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="3" column="1">
                   <widget class="QCheckBox" name="checkBox">
                    <property name="maximumSize">
@@ -3110,8 +3373,8 @@ font-pointSize
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="0">
-                  <widget class="QLabel" name="label_66">
+                 <item row="6" column="0">
+                  <widget class="QLabel" name="label_69">
                    <property name="maximumSize">
                     <size>
                      <width>16777215</width>
@@ -3119,72 +3382,149 @@ font-pointSize
                     </size>
                    </property>
                    <property name="text">
-                    <string>Đèn</string>
+                    <string>Thiết bị 2</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="1">
+                  <widget class="QCheckBox" name="checkBox_3">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">
+            QCheckBox: {
+                &quot;spacing&quot;: &quot;7px&quot;,
+                &quot;color&quot;: &quot;#333333&quot;,
+                &quot;padding&quot;: &quot;3px&quot;,
+                &quot;indicator&quot;: {
+                    &quot;width&quot;: &quot;18px&quot;,
+                    &quot;height&quot;: &quot;18px&quot;,
+                    &quot;border&quot;: &quot;2px solid #999999&quot;,
+                    &quot;border-radius&quot;: &quot;3px&quot;,
+                    &quot;background-color&quot;: &quot;white&quot;,
+                    &quot;image-position&quot;: &quot;center center&quot;,
+                    &quot;hover&quot;: {
+                        &quot;border-color&quot;: &quot;#0078D7&quot;
+                    }
+                },
+                &quot;checked&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;background-color&quot;: &quot;#0078D7&quot;,
+                        &quot;border-color&quot;: &quot;#0078D7&quot;
+                    }
+                },
+                &quot;unchecked&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;background-color&quot;: &quot;white&quot;
+                    }
+                },
+                &quot;indeterminate&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;background-color&quot;: &quot;#f0f0f0&quot;
+                    }
+                },
+                &quot;disabled&quot;: {
+                    &quot;color&quot;: &quot;#999999&quot;,
+                    &quot;indicator&quot;: {
+                        &quot;border-color&quot;: &quot;#cccccc&quot;,
+                        &quot;background-color&quot;: &quot;#f0f0f0&quot;
+                    }
+                },
+                &quot;focus&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;border-color&quot;: &quot;#0078D7&quot;
+                    }
+                },
+                &quot;hover&quot;: {
+                    &quot;color&quot;: &quot;#000000&quot;
+                },
+                &quot;pressed&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;border-color&quot;: &quot;#005a9e&quot;,
+                        &quot;background-color&quot;: &quot;#e5f3ff&quot;
+                    }
+                }
+            }
+    
+  </string>
+                   </property>
+                   <property name="text">
+                    <string/>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QLabel" name="label_67">
-                   <property name="text">
-                    <string>T1:</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="4" column="0">
-                  <spacer name="verticalSpacer_4">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="0" column="0">
-                  <spacer name="verticalSpacer_9">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QDoubleSpinBox" name="doubleSpinBox_8">
-                   <property name="minimumSize">
-                    <size>
-                     <width>100</width>
-                     <height>20</height>
-                    </size>
-                   </property>
+                  <widget class="QCheckBox" name="checkBox_4">
                    <property name="maximumSize">
                     <size>
-                     <width>100</width>
-                     <height>50</height>
+                     <width>30</width>
+                     <height>30</height>
                     </size>
                    </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_65">
-                   <property name="maximumSize">
-                    <size>
-                     <width>150</width>
-                     <height>16777215</height>
-                    </size>
+                   <property name="styleSheet">
+                    <string notr="true">
+            QCheckBox: {
+                &quot;spacing&quot;: &quot;7px&quot;,
+                &quot;color&quot;: &quot;#333333&quot;,
+                &quot;padding&quot;: &quot;3px&quot;,
+                &quot;indicator&quot;: {
+                    &quot;width&quot;: &quot;18px&quot;,
+                    &quot;height&quot;: &quot;18px&quot;,
+                    &quot;border&quot;: &quot;2px solid #999999&quot;,
+                    &quot;border-radius&quot;: &quot;3px&quot;,
+                    &quot;background-color&quot;: &quot;white&quot;,
+                    &quot;image-position&quot;: &quot;center center&quot;,
+                    &quot;hover&quot;: {
+                        &quot;border-color&quot;: &quot;#0078D7&quot;
+                    }
+                },
+                &quot;checked&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;background-color&quot;: &quot;#0078D7&quot;,
+                        &quot;border-color&quot;: &quot;#0078D7&quot;
+                    }
+                },
+                &quot;unchecked&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;background-color&quot;: &quot;white&quot;
+                    }
+                },
+                &quot;indeterminate&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;background-color&quot;: &quot;#f0f0f0&quot;
+                    }
+                },
+                &quot;disabled&quot;: {
+                    &quot;color&quot;: &quot;#999999&quot;,
+                    &quot;indicator&quot;: {
+                        &quot;border-color&quot;: &quot;#cccccc&quot;,
+                        &quot;background-color&quot;: &quot;#f0f0f0&quot;
+                    }
+                },
+                &quot;focus&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;border-color&quot;: &quot;#0078D7&quot;
+                    }
+                },
+                &quot;hover&quot;: {
+                    &quot;color&quot;: &quot;#000000&quot;
+                },
+                &quot;pressed&quot;: {
+                    &quot;indicator&quot;: {
+                        &quot;border-color&quot;: &quot;#005a9e&quot;,
+                        &quot;background-color&quot;: &quot;#e5f3ff&quot;
+                    }
+                }
+            }
+    
+  </string>
                    </property>
                    <property name="text">
-                    <string>Nhiệt độ điều hòa</string>
+                    <string/>
                    </property>
                   </widget>
                  </item>

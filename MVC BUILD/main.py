@@ -280,6 +280,24 @@ class MainWindow(QtWidgets.QMainWindow):
         # Cập nhật nội dung cho QLabel (thời gian ở trên, ngày tháng ở dưới)
         self.time_label.setText(f"{time_str}\n{date_str}")
 
+    def update_temp1_data(self, data):
+        self.temp_value.setText(f"Nhiệt độ 1: {data}°C")
+
+    def update_humi1_data(self, data):
+        self.humi_value.setText(f"Độ ẩm 1: {data}%")
+
+    def update_temp2_data(self, data):
+        self.temp_value_2.setText(f"Nhiệt độ 2: {data}°C")
+
+    def update_humi2_data(self, data):
+        self.humi_value_2.setText(f"Độ ẩm 2: {data}%")
+
+    def update_dc1_data(self, data):
+        self.dc1_value.setText(f"DC1: {data}V")
+
+    def update_dc2_data(self, data):
+        self.dc2_value.setText(f"DC2: {data}V")
+
     def connect_anh_tram_1_button(self, slot):
         self.anhtram_1.clicked.connect(slot)
 

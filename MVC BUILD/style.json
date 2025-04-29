@@ -414,7 +414,33 @@
     }
 }
 ,
+"temp_value_2": {
+    "font": {
+        "family": "Times New Roman",
+        "size": 20,
+        "weight": "bold"
+    },
+    "style": {
+        "QToolButton": {
+            "color": "black"
+        }
+    }
+}
+,
 "humi_value": {
+    "font": {
+        "family": "Times New Roman",
+        "size": 20,
+        "weight": "bold"
+    },
+    "style": {
+        "QToolButton": {
+            "color": "black"
+        }
+    }
+}
+,
+"humi_value_2": {
     "font": {
         "family": "Times New Roman",
         "size": 20,
@@ -769,7 +795,7 @@
     }
 }
 ,
-"label_67": {
+"label_68": {
     "font": {
         "family": "Arial",
         "size": 12,
@@ -782,6 +808,20 @@
     }
 }
 ,
+"label_69": {
+    "font": {
+        "family": "Arial",
+        "size": 12,
+        "weight": "bold"
+    },
+    "style": {
+        "QLabel": {
+            "color": "black"
+        }
+    }
+}
+,
+
 "doubleSpinBox": {
     "font": {
         "family": "Arial",
@@ -927,6 +967,147 @@
 }
 ,
 "checkBox": {
+    "style": {
+        "QCheckBox": {
+            "spacing": "7px",
+            "color": "#333333",
+            "padding": "3px",
+            "indicator": {
+                "width": "14px",
+                "height": "14px",
+                "border": "1px solid #999999",
+                "border-radius": "4px",
+                "background-color": "white",
+                "hover": {
+                    "border-color": "#0078D7"
+                },
+                "checked": {
+                    "background-color": "#0078D7",
+                    "border-color": "#0078D7"},
+                "unchecked": {
+                        "background-color": "white",
+                        "border-color": "#999999"
+                }
+                ,
+                "disabled":
+                {
+                    "color":"#999999",
+                    "border-color": "#cccccc",
+                    "background-color": "#f0f0f0"
+                }
+                ,
+                "pressed":
+                {
+                    "color":"#999999",
+                    "border-color": "#cccccc",
+                    "background-color": "#f0f0f0"
+                }
+                ,
+                "focus":
+                {
+                    "border-color": "#0078D7"
+                }
+            }
+           
+        }
+    }
+}
+,
+"checkBox_2": {
+    "style": {
+        "QCheckBox": {
+            "spacing": "7px",
+            "color": "#333333",
+            "padding": "3px",
+            "indicator": {
+                "width": "14px",
+                "height": "14px",
+                "border": "1px solid #999999",
+                "border-radius": "4px",
+                "background-color": "white",
+                "hover": {
+                    "border-color": "#0078D7"
+                },
+                "checked": {
+                    "background-color": "#0078D7",
+                    "border-color": "#0078D7"},
+                "unchecked": {
+                        "background-color": "white",
+                        "border-color": "#999999"
+                }
+                ,
+                "disabled":
+                {
+                    "color":"#999999",
+                    "border-color": "#cccccc",
+                    "background-color": "#f0f0f0"
+                }
+                ,
+                "pressed":
+                {
+                    "color":"#999999",
+                    "border-color": "#cccccc",
+                    "background-color": "#f0f0f0"
+                }
+                ,
+                "focus":
+                {
+                    "border-color": "#0078D7"
+                }
+            }
+           
+        }
+    }
+}
+,
+"checkBox_3": {
+    "style": {
+        "QCheckBox": {
+            "spacing": "7px",
+            "color": "#333333",
+            "padding": "3px",
+            "indicator": {
+                "width": "14px",
+                "height": "14px",
+                "border": "1px solid #999999",
+                "border-radius": "4px",
+                "background-color": "white",
+                "hover": {
+                    "border-color": "#0078D7"
+                },
+                "checked": {
+                    "background-color": "#0078D7",
+                    "border-color": "#0078D7"},
+                "unchecked": {
+                        "background-color": "white",
+                        "border-color": "#999999"
+                }
+                ,
+                "disabled":
+                {
+                    "color":"#999999",
+                    "border-color": "#cccccc",
+                    "background-color": "#f0f0f0"
+                }
+                ,
+                "pressed":
+                {
+                    "color":"#999999",
+                    "border-color": "#cccccc",
+                    "background-color": "#f0f0f0"
+                }
+                ,
+                "focus":
+                {
+                    "border-color": "#0078D7"
+                }
+            }
+           
+        }
+    }
+}
+,
+"checkBox_4": {
     "style": {
         "QCheckBox": {
             "spacing": "7px",

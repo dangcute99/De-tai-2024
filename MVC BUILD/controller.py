@@ -21,7 +21,6 @@ class Controller():
         self.my_view.ui.setupUi(open_window)
         self.my_view.ui.connect_login_button(self.handle_login)
         self.my_view.ui.connect_sql_setting_button(self.on_sql_setting_clicked)
-
         self.create_config_file()
         # self.load_login_data()
         self.my_view.ui.connect_load_login_info(self.load_login_in4())
@@ -43,7 +42,7 @@ class Controller():
 
         ]
         self.data_points_2 = [
-            (datetime(2024, 11, 1, 11, 30), 22),
+            (datetime(2024, 11, 1, 11, 30), 22.5),
             (datetime(2024, 11, 1, 12, 35), 12),
             (datetime(2024, 11, 1, 13, 37), 25),
             (datetime(2024, 11, 1, 13, 42), 50),
@@ -79,6 +78,7 @@ class Controller():
             self.my_view.ui.return_sql_status(False)
         else:
             if self.my_model.return_user_exists(login_data):
+                self.my_model.start_server()
                 print("Đăng nhập thành công")
                 if self.sql_login_window and self.sql_login_window.isVisible():
                     self.sql_login_window.close()
@@ -256,6 +256,24 @@ class Controller():
 
     def setting_button(self):
         self.my_view.main.hienthi.setCurrentIndex(5)
+
+    def update_temp1_data(self, data):
+        self.my_view.main.update_temp1_data(data)
+
+    def update_humi1_data(self, data):
+        self.my_view.main.update_humi1_data(data)
+
+    def update_temp2_data(self, data):
+        self.my_view.main.update_temp2_data(data)
+
+    def update_humi2_data(self, data):
+        self.my_view.main.update_humi2_data(data)
+
+    def update_dc1_data(self, data):
+        self.my_view.main.update_dc1_data(data)
+
+    def update_dc2_data(self, data):
+        self.my_view.main.update_dc2_data(data)
 ################################################################
 
 
@@ -267,5 +285,10 @@ if __name__ == "__main__":
     ct = Controller(API)  # Khởi tạo Controller và truyền QMainWindow vào
 
     API.show()  # Gọi show() trên QMainWindow
-
+    ct.my_view.main.update_temp1_data(25)
+    ct.my_view.main.update_humi1_data(60)
+    ct.my_view.main.update_temp2_data(55)
+    ct.my_view.main.update_humi2_data(6)
+    ct.my_view.main.update_dc1_data(12)
+    ct.my_view.main.update_dc2_data(15)
     sys.exit(app.exec())
