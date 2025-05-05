@@ -9,5 +9,5 @@ model = Model(db_config)
 # model.receive_data("172.20.10.10", 2380)
 ######################################
 # test figure
-data = model.get_x_firgue_data('data', 'temp1_value', 'temp1', 2)
+data = model.get_x_firgue_data('data', 'temp1_value', 'temp1', 20)
 print(data)

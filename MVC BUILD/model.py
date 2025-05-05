@@ -230,7 +230,8 @@ class Model:
 
         data_points = []
         for row in json_data:
-            timestamp = datetime.fromisoformat(row['timestamp'])
+            timestamp = datetime.fromisoformat(
+                row['timestamp']).replace(second=0, microsecond=0)
             value = row[column_name]
             data_points.append((timestamp, value))
 

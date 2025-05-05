@@ -42,19 +42,19 @@ class Controller():
 
         ]
         self.data_points_2 = [
-            (datetime(2024, 11, 1, 11, 30), 22.5),
-            (datetime(2024, 11, 1, 12, 35), 12),
-            (datetime(2024, 11, 1, 13, 37), 25),
-            (datetime(2024, 11, 1, 13, 42), 50),
-            (datetime(2024, 11, 1, 13, 45), 28),
-            (datetime(2024, 11, 1, 14, 50), 26),
-            (datetime(2024, 11, 1, 14, 56), 24),
-            (datetime(2024, 11, 1, 15, 5), 58),
-            (datetime(2024, 11, 1, 16, 10), 20),
-            (datetime(2024, 11, 1, 16, 15), 12),
-            (datetime(2024, 11, 1, 16, 20), 50),
-            (datetime(2024, 11, 1, 16, 30), 35),
-            (datetime(2024, 11, 1, 17, 40), 90),
+            (datetime(2024, 11, 29, 11, 30), 22.5),
+            (datetime(2024, 11, 29, 12, 35), 12),
+            (datetime(2024, 11, 29, 13, 37), 25),
+            (datetime(2024, 11, 29, 13, 42), 50),
+            (datetime(2024, 11, 29, 13, 45), 28),
+            (datetime(2024, 11, 29, 14, 50), 26),
+            (datetime(2024, 11, 29, 14, 56), 24),
+            (datetime(2024, 11, 29, 15, 5), 58),
+            (datetime(2024, 11, 29, 16, 10), 20),
+            (datetime(2024, 11, 29, 16, 15), 12),
+            (datetime(2024, 11, 29, 16, 20), 50),
+            (datetime(2024, 11, 29, 16, 30), 35),
+            (datetime(2024, 11, 29, 17, 40), 90),
 
         ]
         self.temp_1 = 19
@@ -235,16 +235,25 @@ class Controller():
 
     def temp_button(self):
         self.my_view.main.hienthi.setCurrentIndex(1)
+        print(self.data_points)
+        self.data_points = self.my_model.get_x_firgue_data(
+            'data', 'temp1_value', 'temp1', 10)
+        print(self.data_points)
+        # self.data_points_2 = [[(datetime(2025, 4, 25, 15, 5), 30.0), (datetime(
+        #     2025, 4, 25, 14, 51), 30.0), (datetime(2025, 4, 24, 9, 22), 30.0), (datetime(2025, 4, 24, 9, 17), 30.0)]]
         self.my_view.main.ve_bieu_do_nhiet_do(
-            self.data_points, self.data_points_2, self.temp_1, self.temp_2)
+            self.data_points, self.data_points, self.temp_1, self.temp_2)
 
     def humi_button(self):
         self.my_view.main.hienthi.setCurrentIndex(2)
+        self.data_points = self.my_model.get_x_firgue_data(
+            'data', 'temp1_value', 'temp1', 10)
         self.my_view.main.ve_bieu_do_do_am(
-            self.data_points_2, self.data_points, self.humi_1, self.humi_2)
+            self.data_points, self.data_points, self.humi_1, self.humi_2)
 
     def dc_button(self):
         self.my_view.main.hienthi.setCurrentIndex(3)
+
         self.my_view.main.ve_bieu_do_dc(
             self.data_points, self.data_points_2, self.dc_1, self.dc_2, self.dc_3)
 

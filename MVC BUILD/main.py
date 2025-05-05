@@ -380,15 +380,26 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Tách ngày giờ và nhiệt độ từ hai tập dữ liệu
         dates_1, temperatures_1 = zip(*data_points)
-        dates_2, temperatures_2 = zip(*data_points_2)
+        # dates_2, temperatures_2 = zip(*data_points_2)
+        # Độ lệch để nâng đường 2 lên so với giá trị thật
+        temp_offset = 0.5
+
+        # Tạo danh sách đã được điều chỉnh để vẽ đường và điểm
+        adjusted_data_points_2 = [(date, temp + temp_offset)
+                                  for date, temp in data_points_2]
+        adjusted_temperatures_2 = [
+            temp + temp_offset for _, temp in data_points_2]
+        dates_2, _ = zip(*data_points_2)  # Lấy ngày từ dữ liệu gốc
+        ax.plot(dates_2, adjusted_temperatures_2, color='#FF6347',
+                linestyle='-', linewidth=1, label="Đường nhiệt độ 2")
 
         # Vẽ đường nhiệt độ chính (đường 1)
         ax.plot(dates_1, temperatures_1, color='#0088FF',
                 linestyle='-', linewidth=1, label="Đường nhiệt độ 1")
 
-        # Vẽ đường nhiệt độ thứ hai (đường 2)
-        ax.plot(dates_2, temperatures_2, color='#FF6347',
-                linestyle='-', linewidth=1, label="Đường nhiệt độ 2")
+        # # Vẽ đường nhiệt độ thứ hai (đường 2)
+        # ax.plot(dates_2, temperatures_2, color='#FF6347',
+        #         linestyle='-', linewidth=1, label="Đường nhiệt độ 2")
 
         # Vẽ các điểm dữ liệu và đường kẻ dọc cho đường 1
         for date, temp in data_points:
@@ -397,11 +408,16 @@ class MainWindow(QtWidgets.QMainWindow):
             ax.plot([date, date], [0, temp], color='gray',
                     linestyle='-', linewidth=0.5, alpha=0.3)
 
-        # Vẽ các điểm dữ liệu và đường kẻ dọc cho đường 2
-        for date, temp in data_points_2:
-            color = 'red' if temp > temp_2 or temp < temp_1 else '#00FF00'
-            ax.scatter(date, temp, color=color, s=50)
-            ax.plot([date, date], [0, temp], color='gray',
+        # # Vẽ các điểm dữ liệu và đường kẻ dọc cho đường 2
+        # for date, temp in data_points_2:
+        #     color = 'red' if temp > temp_2 or temp < temp_1 else '#00FF00'
+        #     ax.scatter(date, temp, color=color, s=50)
+        #     ax.plot([date, date], [0, temp], color='gray',
+        #             linestyle='--', linewidth=0.5, alpha=0.3)
+        for (date, adjusted_temp), (_, original_temp) in zip(adjusted_data_points_2, data_points_2):
+            color = 'red' if original_temp > temp_2 or original_temp < temp_1 else '#00FF00'
+            ax.scatter(date, adjusted_temp, color=color, s=50)
+            ax.plot([date, date], [0, adjusted_temp], color='gray',
                     linestyle='--', linewidth=0.5, alpha=0.3)
 
         # Vẽ các đường ngưỡng
@@ -484,41 +500,84 @@ class MainWindow(QtWidgets.QMainWindow):
 
             return x_offset, y_offset
 
+        # def on_hover(event):
+        #     if event.inaxes == ax:
+        #         hit = False
+        #         for idx, (date, temp) in enumerate(data_points + data_points_2):
+        #             # Kiểm tra điểm thuộc đường 1 hay đường 2
+        #             is_first_dataset = idx < len(data_points)
+        #             dataset_label = "Đường 1" if is_first_dataset else "Đường 2"
+
+        #             # Tăng độ nhạy của vùng hover
+        #             if abs(event.xdata - mdates.date2num(date)) <= 0.001 and abs(event.ydata - temp) <= 1:
+        #                 hit = True
+        #                 # Lấy offset thông minh
+        #                 x_offset, y_offset = get_smart_offset(
+        #                     date, temp, ax.bbox)
+
+        #                 # Cập nhật vị trí và thuộc tính của tooltip
+        #                 annot.xy = (mdates.date2num(date), temp)
+        #                 annot.set_position((x_offset, y_offset))
+
+        #                 # Định dạng nội dung tooltip
+        #                 tooltip_text = (
+        #                     f"{dataset_label}\n"
+        #                     f"Ngày: {date.strftime('%d/%m/%Y')}\n"
+        #                     f"Thời gian: {date.strftime('%H:%M')}\n"
+        #                     f"Nhiệt độ: {temp}°C"
+        #                 )
+        #                 if temp > temp_2:
+        #                     tooltip_text += "\n⚠️ Nhiệt độ cao"
+        #                 elif temp < temp_1:
+        #                     tooltip_text += "\n⚠️ Nhiệt độ thấp"
+
+        #                 annot.set_text(tooltip_text)
+
+        #                 # Đổi màu tooltip theo trạng thái nhiệt độ
+        #                 if temp > temp_2 or temp < temp_1:
+        #                     annot.get_bbox_patch().set(fc="#F01F1F")
+        #                 else:
+        #                     annot.get_bbox_patch().set(fc="#00FF00")
+
+        #                 annot.set_visible(True)
+        #                 canvas.draw_idle()
+        #                 break
+
+        #         if not hit and annot.get_visible():
+        #             annot.set_visible(False)
+        #             canvas.draw_idle()
         def on_hover(event):
             if event.inaxes == ax:
                 hit = False
-                for idx, (date, temp) in enumerate(data_points + data_points_2):
-                    # Kiểm tra điểm thuộc đường 1 hay đường 2
-                    is_first_dataset = idx < len(data_points)
-                    dataset_label = "Đường 1" if is_first_dataset else "Đường 2"
+                combined_points = (
+                    [(date, temp, "Đường 1", temp) for date, temp in data_points] +
+                    [(date, temp + temp_offset, "Đường 2", temp)
+                     for date, temp in data_points_2]
+                )
 
-                    # Tăng độ nhạy của vùng hover
-                    if abs(event.xdata - mdates.date2num(date)) <= 0.001 and abs(event.ydata - temp) <= 1:
+                for date, displayed_temp, dataset_label, real_temp in combined_points:
+                    if abs(event.xdata - mdates.date2num(date)) <= 0.001 and abs(event.ydata - displayed_temp) <= 1:
                         hit = True
-                        # Lấy offset thông minh
                         x_offset, y_offset = get_smart_offset(
-                            date, temp, ax.bbox)
+                            date, displayed_temp, ax.bbox)
 
-                        # Cập nhật vị trí và thuộc tính của tooltip
-                        annot.xy = (mdates.date2num(date), temp)
+                        annot.xy = (mdates.date2num(date), displayed_temp)
                         annot.set_position((x_offset, y_offset))
 
-                        # Định dạng nội dung tooltip
                         tooltip_text = (
                             f"{dataset_label}\n"
                             f"Ngày: {date.strftime('%d/%m/%Y')}\n"
                             f"Thời gian: {date.strftime('%H:%M')}\n"
-                            f"Nhiệt độ: {temp}°C"
+                            f"Nhiệt độ: {real_temp}°C"
                         )
-                        if temp > temp_2:
+                        if real_temp > temp_2:
                             tooltip_text += "\n⚠️ Nhiệt độ cao"
-                        elif temp < temp_1:
+                        elif real_temp < temp_1:
                             tooltip_text += "\n⚠️ Nhiệt độ thấp"
 
                         annot.set_text(tooltip_text)
 
-                        # Đổi màu tooltip theo trạng thái nhiệt độ
-                        if temp > temp_2 or temp < temp_1:
+                        if real_temp > temp_2 or real_temp < temp_1:
                             annot.get_bbox_patch().set(fc="#F01F1F")
                         else:
                             annot.get_bbox_patch().set(fc="#00FF00")
@@ -631,6 +690,169 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return button
 
+    # def plot_humidity_chart_in_widget(self, data_points, data_points_2, humidity_1, humidity_2):
+    #     """
+    #     Vẽ biểu đồ độ ẩm với tooltip thông minh tự động điều chỉnh vị trí
+    #     """
+    #     parent_widget = self.humi_chart
+    #     figure, ax = plt.subplots(figsize=(12, 6))
+
+    #     # Tách ngày giờ và độ ẩm từ hai tập dữ liệu
+    #     dates_1, humidity_1_values = zip(*data_points)
+    #     dates_2, humidity_2_values = zip(*data_points_2)
+
+    #     # Vẽ đường độ ẩm chính (đường 1)
+    #     ax.plot(dates_1, humidity_1_values, color='#0088FF',
+    #             linestyle='-', linewidth=1, label="Đường độ ẩm 1")
+
+    #     # Vẽ đường độ ẩm thứ hai (đường 2)
+    #     ax.plot(dates_2, humidity_2_values, color='#FF6347',
+    #             linestyle='-', linewidth=1, label="Đường độ ẩm 2")
+
+    #     # Vẽ các điểm dữ liệu và đường kẻ dọc cho đường 1
+    #     for date, humidity in data_points:
+    #         color = 'red' if humidity > humidity_2 or humidity < humidity_1 else '#00FF00'
+    #         ax.scatter(date, humidity, color=color, s=50)
+    #         ax.plot([date, date], [0, humidity], color='gray',
+    #                 linestyle='-', linewidth=0.5, alpha=0.3)
+
+    #     # Vẽ các điểm dữ liệu và đường kẻ dọc cho đường 2
+    #     for date, humidity in data_points_2:
+    #         color = 'red' if humidity > humidity_2 or humidity < humidity_1 else '#00FF00'
+    #         ax.scatter(date, humidity, color=color, s=50)
+    #         ax.plot([date, date], [0, humidity], color='gray',
+    #                 linestyle='--', linewidth=0.5, alpha=0.3)
+
+    #     # Vẽ các đường ngưỡng
+    #     ax.axhline(y=humidity_1, color='#35ff00', linestyle='--',
+    #                linewidth=1, label=f"Ngưỡng {humidity_1}%")
+    #     ax.axhline(y=humidity_2, color='#f600ff', linestyle='-.',
+    #                linewidth=1, label=f"Ngưỡng {humidity_2}%")
+
+    #     # Định dạng trục thời gian
+    #     time_format = mdates.DateFormatter("%H:%M")
+    #     ax.xaxis.set_major_formatter(time_format)
+    #     ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+
+    #     # Thiết lập nhãn trục và tiêu đề
+    #     ax.set_xlabel("Thời gian", fontsize=10)
+    #     ax.xaxis.set_label_coords(0.95, -0.05)
+    #     ax.set_ylabel("Độ ẩm (%)", fontsize=10)
+    #     ax.yaxis.set_label_coords(-0.03, 0.9)
+    #     figure.text(0.5, 0.1, "Biểu đồ độ ẩm", fontsize=14,
+    #                 ha='center', fontweight='bold')
+    #     ax.legend(loc='best')
+    #     ax.grid(False)
+
+    #     # Tối ưu layout
+    #     plt.tight_layout()
+    #     figure.autofmt_xdate()
+
+    #     # Tạo canvas và thêm vào widget
+    #     canvas = FigureCanvas(figure)
+    #     layout = parent_widget.layout()
+    #     if not layout:
+    #         layout = QtWidgets.QVBoxLayout(parent_widget)
+    #         parent_widget.setLayout(layout)
+    #     layout.addWidget(canvas)
+
+    #     # Tạo annotation cho tooltip
+    #     annot = ax.annotate(
+    #         "",
+    #         xy=(0, 0),
+    #         xytext=(0, 0),
+    #         textcoords="offset points",
+    #         bbox=dict(
+    #             boxstyle="round4,pad=0.5",
+    #             fc="white",
+    #             ec="gray",
+    #             alpha=0.9,
+    #             mutation_scale=0.8
+    #         ),
+    #         arrowprops=dict(
+    #             arrowstyle="-|>",
+    #             connectionstyle="arc3,rad=0.2",
+    #             color='gray'
+    #         )
+    #     )
+    #     annot.set_visible(False)
+
+    #     def get_smart_offset(date, humidity, ax_bbox):
+    #         """
+    #         Tính toán offset thông minh cho tooltip dựa trên vị trí của điểm và kích thước của đồ thị
+    #         """
+    #         x_rel = (mdates.date2num(date) - ax.get_xlim()
+    #                  [0]) / (ax.get_xlim()[1] - ax.get_xlim()[0])
+    #         y_rel = (humidity - ax.get_ylim()[0]) / \
+    #             (ax.get_ylim()[1] - ax.get_ylim()[0])
+
+    #         # Offset mặc định
+    #         x_offset = 10
+    #         y_offset = 10
+
+    #         # Điều chỉnh theo vị trí tương đối
+    #         if x_rel > 0.8:  # Gần mép phải
+    #             x_offset = -80
+    #         elif x_rel < 0.2:  # Gần mép trái
+    #             x_offset = 20
+
+    #         if y_rel > 0.8:  # Gần mép trên
+    #             y_offset = -40
+    #         elif y_rel < 0.2:  # Gần mép dưới
+    #             y_offset = 20
+
+    #         return x_offset, y_offset
+
+    #     def on_hover(event):
+    #         if event.inaxes == ax:
+    #             hit = False
+    #             for idx, (date, humidity) in enumerate(data_points + data_points_2):
+    #                 # Kiểm tra điểm thuộc đường 1 hay đường 2
+    #                 is_first_dataset = idx < len(data_points)
+    #                 dataset_label = "Đường 1" if is_first_dataset else "Đường 2"
+
+    #                 # Tăng độ nhạy của vùng hover
+    #                 if abs(event.xdata - mdates.date2num(date)) <= 0.001 and abs(event.ydata - humidity) <= 1:
+    #                     hit = True
+    #                     # Lấy offset thông minh
+    #                     x_offset, y_offset = get_smart_offset(
+    #                         date, humidity, ax.bbox)
+
+    #                     # Cập nhật vị trí và thuộc tính của tooltip
+    #                     annot.xy = (mdates.date2num(date), humidity)
+    #                     annot.set_position((x_offset, y_offset))
+
+    #                     # Định dạng nội dung tooltip
+    #                     tooltip_text = (
+    #                         f"{dataset_label}\n"
+    #                         f"Ngày: {date.strftime('%d/%m/%Y')}\n"
+    #                         f"Thời gian: {date.strftime('%H:%M')}\n"
+    #                         f"Độ ẩm: {humidity}%"
+    #                     )
+    #                     if humidity > humidity_2:
+    #                         tooltip_text += "\n⚠️ Độ ẩm cao"
+    #                     elif humidity < humidity_1:
+    #                         tooltip_text += "\n⚠️ Độ ẩm thấp"
+
+    #                     annot.set_text(tooltip_text)
+
+    #                     # Đổi màu tooltip theo trạng thái độ ẩm
+    #                     if humidity > humidity_2 or humidity < humidity_1:
+    #                         annot.get_bbox_patch().set(fc="#F01F1F")
+    #                     else:
+    #                         annot.get_bbox_patch().set(fc="#00FF00")
+
+    #                     annot.set_visible(True)
+    #                     canvas.draw_idle()
+    #                     break
+
+    #             if not hit and annot.get_visible():
+    #                 annot.set_visible(False)
+    #                 canvas.draw_idle()
+
+    #     canvas.mpl_connect("motion_notify_event", on_hover)
+    #     canvas.setSizePolicy(QSizePolicy.Policy.Expanding,
+    #                          QSizePolicy.Policy.Expanding)
     def plot_humidity_chart_in_widget(self, data_points, data_points_2, humidity_1, humidity_2):
         """
         Vẽ biểu đồ độ ẩm với tooltip thông minh tự động điều chỉnh vị trí
@@ -639,57 +861,59 @@ class MainWindow(QtWidgets.QMainWindow):
         figure, ax = plt.subplots(figsize=(12, 6))
 
         # Tách ngày giờ và độ ẩm từ hai tập dữ liệu
-        dates_1, humidity_1_values = zip(*data_points)
-        dates_2, humidity_2_values = zip(*data_points_2)
+        dates_1, humidities_1 = zip(*data_points)
+        dates_2, humidities_2 = zip(*data_points_2)
 
-        # Vẽ đường độ ẩm chính (đường 1)
-        ax.plot(dates_1, humidity_1_values, color='#0088FF',
+        # Dịch đường 2 lên một chút để tránh đè
+        shifted_humidities_2 = [h + 1 for h in humidities_2]
+
+        # Vẽ đường độ ẩm 1
+        ax.plot(dates_1, humidities_1, color='#0088FF',
                 linestyle='-', linewidth=1, label="Đường độ ẩm 1")
 
-        # Vẽ đường độ ẩm thứ hai (đường 2)
-        ax.plot(dates_2, humidity_2_values, color='#FF6347',
+        # Vẽ đường độ ẩm 2 (dịch lên)
+        ax.plot(dates_2, shifted_humidities_2, color='#FF6347',
                 linestyle='-', linewidth=1, label="Đường độ ẩm 2")
 
-        # Vẽ các điểm dữ liệu và đường kẻ dọc cho đường 1
-        for date, humidity in data_points:
-            color = 'red' if humidity > humidity_2 or humidity < humidity_1 else '#00FF00'
-            ax.scatter(date, humidity, color=color, s=50)
-            ax.plot([date, date], [0, humidity], color='gray',
+        # Vẽ các điểm cho đường 1
+        for date, hum in data_points:
+            color = 'red' if hum > humidity_2 or hum < humidity_1 else '#00FF00'
+            ax.scatter(date, hum, color=color, s=50)
+            ax.plot([date, date], [0, hum], color='gray',
                     linestyle='-', linewidth=0.5, alpha=0.3)
 
-        # Vẽ các điểm dữ liệu và đường kẻ dọc cho đường 2
-        for date, humidity in data_points_2:
-            color = 'red' if humidity > humidity_2 or humidity < humidity_1 else '#00FF00'
-            ax.scatter(date, humidity, color=color, s=50)
-            ax.plot([date, date], [0, humidity], color='gray',
+        # Vẽ các điểm cho đường 2 (dịch lên nhưng vẫn dùng giá trị gốc cho tooltip)
+        for (date, hum), shifted_hum in zip(data_points_2, shifted_humidities_2):
+            color = 'red' if hum > humidity_2 or hum < humidity_1 else '#00FF00'
+            ax.scatter(date, shifted_hum, color=color, s=50)
+            ax.plot([date, date], [0, shifted_hum], color='gray',
                     linestyle='--', linewidth=0.5, alpha=0.3)
 
-        # Vẽ các đường ngưỡng
+        # Vẽ ngưỡng
         ax.axhline(y=humidity_1, color='#35ff00', linestyle='--',
                    linewidth=1, label=f"Ngưỡng {humidity_1}%")
         ax.axhline(y=humidity_2, color='#f600ff', linestyle='-.',
                    linewidth=1, label=f"Ngưỡng {humidity_2}%")
 
         # Định dạng trục thời gian
-        time_format = mdates.DateFormatter("%H:%M")
-        ax.xaxis.set_major_formatter(time_format)
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
         ax.xaxis.set_major_locator(mdates.AutoDateLocator())
 
-        # Thiết lập nhãn trục và tiêu đề
+        # Nhãn trục
         ax.set_xlabel("Thời gian", fontsize=10)
         ax.xaxis.set_label_coords(0.95, -0.05)
         ax.set_ylabel("Độ ẩm (%)", fontsize=10)
         ax.yaxis.set_label_coords(-0.03, 0.9)
+
         figure.text(0.5, 0.1, "Biểu đồ độ ẩm", fontsize=14,
                     ha='center', fontweight='bold')
         ax.legend(loc='best')
         ax.grid(False)
 
-        # Tối ưu layout
         plt.tight_layout()
         figure.autofmt_xdate()
 
-        # Tạo canvas và thêm vào widget
+        # Thêm vào widget
         canvas = FigureCanvas(figure)
         layout = parent_widget.layout()
         if not layout:
@@ -697,92 +921,59 @@ class MainWindow(QtWidgets.QMainWindow):
             parent_widget.setLayout(layout)
         layout.addWidget(canvas)
 
-        # Tạo annotation cho tooltip
+        # Tooltip annotation
         annot = ax.annotate(
             "",
             xy=(0, 0),
             xytext=(0, 0),
             textcoords="offset points",
-            bbox=dict(
-                boxstyle="round4,pad=0.5",
-                fc="white",
-                ec="gray",
-                alpha=0.9,
-                mutation_scale=0.8
-            ),
-            arrowprops=dict(
-                arrowstyle="-|>",
-                connectionstyle="arc3,rad=0.2",
-                color='gray'
-            )
+            bbox=dict(boxstyle="round4,pad=0.5", fc="white",
+                      ec="gray", alpha=0.9, mutation_scale=0.8),
+            arrowprops=dict(arrowstyle="-|>",
+                            connectionstyle="arc3,rad=0.2", color='gray')
         )
         annot.set_visible(False)
 
-        def get_smart_offset(date, humidity, ax_bbox):
-            """
-            Tính toán offset thông minh cho tooltip dựa trên vị trí của điểm và kích thước của đồ thị
-            """
+        def get_smart_offset(date, val, ax_bbox):
             x_rel = (mdates.date2num(date) - ax.get_xlim()
                      [0]) / (ax.get_xlim()[1] - ax.get_xlim()[0])
-            y_rel = (humidity - ax.get_ylim()[0]) / \
+            y_rel = (val - ax.get_ylim()[0]) / \
                 (ax.get_ylim()[1] - ax.get_ylim()[0])
-
-            # Offset mặc định
-            x_offset = 10
-            y_offset = 10
-
-            # Điều chỉnh theo vị trí tương đối
-            if x_rel > 0.8:  # Gần mép phải
-                x_offset = -80
-            elif x_rel < 0.2:  # Gần mép trái
-                x_offset = 20
-
-            if y_rel > 0.8:  # Gần mép trên
-                y_offset = -40
-            elif y_rel < 0.2:  # Gần mép dưới
-                y_offset = 20
-
+            x_offset = -80 if x_rel > 0.8 else 20 if x_rel < 0.2 else 10
+            y_offset = -40 if y_rel > 0.8 else 20 if y_rel < 0.2 else 10
             return x_offset, y_offset
 
         def on_hover(event):
             if event.inaxes == ax:
                 hit = False
-                for idx, (date, humidity) in enumerate(data_points + data_points_2):
-                    # Kiểm tra điểm thuộc đường 1 hay đường 2
+                combined = list(data_points) + list(data_points_2)
+                for idx, (date, hum) in enumerate(combined):
                     is_first_dataset = idx < len(data_points)
                     dataset_label = "Đường 1" if is_first_dataset else "Đường 2"
+                    y_display = hum if is_first_dataset else hum + 1
 
-                    # Tăng độ nhạy của vùng hover
-                    if abs(event.xdata - mdates.date2num(date)) <= 0.001 and abs(event.ydata - humidity) <= 1:
+                    if abs(event.xdata - mdates.date2num(date)) <= 0.001 and abs(event.ydata - y_display) <= 1:
                         hit = True
-                        # Lấy offset thông minh
                         x_offset, y_offset = get_smart_offset(
-                            date, humidity, ax.bbox)
+                            date, y_display, ax.bbox)
 
-                        # Cập nhật vị trí và thuộc tính của tooltip
-                        annot.xy = (mdates.date2num(date), humidity)
+                        annot.xy = (mdates.date2num(date), y_display)
                         annot.set_position((x_offset, y_offset))
 
-                        # Định dạng nội dung tooltip
                         tooltip_text = (
                             f"{dataset_label}\n"
                             f"Ngày: {date.strftime('%d/%m/%Y')}\n"
                             f"Thời gian: {date.strftime('%H:%M')}\n"
-                            f"Độ ẩm: {humidity}%"
+                            f"Độ ẩm: {hum}%"
                         )
-                        if humidity > humidity_2:
+                        if hum > humidity_2:
                             tooltip_text += "\n⚠️ Độ ẩm cao"
-                        elif humidity < humidity_1:
+                        elif hum < humidity_1:
                             tooltip_text += "\n⚠️ Độ ẩm thấp"
 
                         annot.set_text(tooltip_text)
-
-                        # Đổi màu tooltip theo trạng thái độ ẩm
-                        if humidity > humidity_2 or humidity < humidity_1:
-                            annot.get_bbox_patch().set(fc="#F01F1F")
-                        else:
-                            annot.get_bbox_patch().set(fc="#00FF00")
-
+                        annot.get_bbox_patch().set(fc="#F01F1F" if hum >
+                                                   humidity_2 or hum < humidity_1 else "#00FF00")
                         annot.set_visible(True)
                         canvas.draw_idle()
                         break
